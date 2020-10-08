@@ -1,0 +1,55 @@
+#grid{
+    /* leave this var alone damit */
+    --tileSize:4vw;
+    width:100%;
+}
+
+.tileBody {
+    margin-left:.4rem;
+    margin-bottom:.4rem;
+    width: var(--tileSize);
+    display:inline-block;
+    background-color:red;
+}
+.tileBody:after {
+    content: '';
+    display: inline-block;
+    padding-bottom:100%;
+}
+
+.spacer{
+    margin-left:.4rem;
+    margin-bottom:.4rem;
+    display:inline-block;
+}
+
+.moveColTop{
+    height:8vh;
+    margin-left:.4rem;
+}
+.moveColTop > *{
+    width: var(--tileSize);
+    display:inline-block;
+    color:black;
+}
+.moveColBottom{
+    height:0;
+    margin-left:.4rem;
+}
+.moveColBottom > svg{
+    margin-top:-5vh;
+    height:15vh;
+    width: var(--tileSize);
+    display:inline-block;
+    color:black;
+}
+
+.moveRow > svg{
+    height:var(--tileSize);
+    display:inline-block;
+    color:black;
+}
+
+.moveColTop > svg:hover, .moveColBottom > svg:hover, .moveRow > svg:hover{
+    color:grey;
+}

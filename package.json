@@ -8,8 +8,26 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.31",
+    "@fortawesome/free-solid-svg-icons": "^5.15.0",
+    "@fortawesome/react-fontawesome": "^0.1.11",
+    "@prisma/client": "^2.8.0",
+    "fs": "0.0.1-security",
+    "gray-matter": "^4.0.2",
+    "mysql": "^2.18.1",
     "next": "9.3.5",
     "react": "16.13.1",
     "react-dom": "16.13.1"
-  }
+  },
+  "description": "This is a starter template for [Learn Next.js](https://nextjs.org/learn).",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "devDependencies": {
+    "@prisma/cli": "^2.8.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
