@@ -10,48 +10,79 @@ import css from '../../components/tile.module.css'
 import React from 'react'
 import ReactDOM from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Suspects from '../../mappings/suspectList'
 
 
 export default class GameBoard extends React.Component{
     constructor(props){
         super(props)
         // This binding is necessary to make `this` work in the callback
-        this.handleUpClick = this.handleUpClick.bind(this)
+        this.handleClick = this.handleClick.bind(this)
         this.state = {
-            matrix: [
-                [1, 2, 3, 4, 5],
-                [6, 7, 8, 9, 10],
-                [11, 12, 13, 14, 15],
-                [16, 17, 18, 19, 20],
-                [21, 22, 23, 24, 25]
-            ]
+            matrix: Suspects
         }
+        console.log(this.state)
     }
     componentDidMount() {}
     componentWillUnmount() {
         //this.setState({})
     }
+    getMatrixCol(index){
+        return this.state.matrix.map((row) => {
+            return row[index];
+        })
+    }
 
-    handleUpClick(index){
-        //e.preventDefault()
-        //e.stopPropagation()
-        //e.nativeEvent.stopImmediatePropagation()
-        //console.log(e)
-        // data-col-index
-        //if (e.currentTarget.dataset.colIndex !== undefined) {
-        //    console.log(e.target.dataset.colIndex)
-        //} else {
-        //    console.log(e.target.dataset.rowIndex)
-        //}
-        console.log('index: ' + index)
+    getMatrixRow(index) {
+        return this.state.matrix[index]
+    }
+
+    shiftMatrix(toShift,dir){
+        switch (dir) {
+            case 'up' :
+                const shiftingUp = toShift[0]
+                toShift.splice(0, 1)
+                toShift.push(shiftingUp)
+                return toShift
+            case 'down':
+                const shiftingDown = toShift[4]
+                toShift.splice(4, 1)
+                toShift.unshift(shiftingDown)
+                return toShift
+            case 'left':
+                const shiftingLeft = toShift[0]
+                toShift.splice(0, 1)
+                toShift.push(shiftingLeft)
+                return toShift
+            case 'right':
+                const shiftingRight = toShift[4]
+                toShift.splice(4, 1)
+                toShift.unshift(shiftingRight)
+                return toShift
+            default:
+                break
+        }
+    }
+
+    handleClick(index, direction){
+        if (direction === 'left' || direction === 'right') {
+            this.state.matrix[index] = this.shiftMatrix(this.getMatrixRow(index), direction)
+        } else {
+            // need to rebuild rows with new values in var index
+            let newCols = this.shiftMatrix(this.getMatrixCol(index), direction)
+            console.log(newCols)
+            const oldMatrix = this.state.matrix
+            this.state.matrix = []
+            oldMatrix.forEach((row, i) => {
+                console.log(newCols[i])
+                row[index] = newCols[i]
+                this.state.matrix.push(row) 
+            })
+            
+        }
         this.setState({
-            matrix: [
-                [1, 2, 3, 4, 5],
-                [6, 7, 8, 9, 10],
-                [11, 12, 13, 14, 15],
-                [16, 17, 18, 19, 20],
-                [21, 22, 23, 24, 25]]
-        });
+            matrix: this.state.matrix
+        })
     }
 
     render(){
@@ -62,45 +93,46 @@ export default class GameBoard extends React.Component{
                     <title>Game Board</title>
                 </Head>
                 <div id={css.grid}>
-                    <table align="center">
+                    <table id={css.Gameboard} align="center">
                         <tbody>
                             <tr>
                                 <td></td>
-                                <MoveUpButton handleClick={this.handleUpClick} colIndex='0' />
-                                <MoveUpButton handleClick={this.handleUpClick} colIndex='1' />
-                                <MoveUpButton handleClick={this.handleUpClick} colIndex='2' />
-                                <MoveUpButton handleClick={this.handleUpClick} colIndex='3' />
-                                <MoveUpButton handleClick={this.handleUpClick} colIndex='4' />
+                                <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='0' />
+                                <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='1' />
+                                <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='2' />
+                                <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='3' />
+                                <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='4' />
                                 
                             </tr>
                             {matrix.map((i, row) => {
                                 return (
                                     <tr className={`boardRow`}>
-                                        <MoveLeftButton handleClick={this.handleUpClick} colIndex={row} />
-                                        {i.map(function (index, col) {
-
+                                        <MoveLeftButton key={`0-${row}`} handleClick={this.handleClick} direction='left' colIndex={row} />
+                                        {i.map(function (suspect) {
+                                            console.log()
                                             return (
                                                 <td>
-                                                    {<Tile key={`${index}`} name={index} alive={true} image={null}></Tile>}
+                                                    {<Tile key={suspect.id} name={suspect.name} alive={suspect.alive} image={suspect.image}></Tile>}
                                                 </td>
                                             )
                                         })
                                         }
-                                        <MoveRightButton handleClick={this.handleUpClick} colIndex={row} />
+                                        <MoveRightButton key={`1-${row}`} handleClick={this.handleClick} direction='right' colIndex={row} />
                                     </tr>
                                 )
                             })}
                             <tr>
                                 <td></td>
-                                <MoveDownButton handleClick={this.handleUpClick} colIndex='0' />
-                                <MoveDownButton handleClick={this.handleUpClick} colIndex='1' />
-                                <MoveDownButton handleClick={this.handleUpClick} colIndex='2' />
-                                <MoveDownButton handleClick={this.handleUpClick} colIndex='3' />
-                                <MoveDownButton handleClick={this.handleUpClick} colIndex='4' />
+                                <MoveDownButton handleClick={this.handleClick} direction='down' colIndex='0' />
+                                <MoveDownButton handleClick={this.handleClick} direction='down' colIndex='1' />
+                                <MoveDownButton handleClick={this.handleClick} direction='down' colIndex='2' />
+                                <MoveDownButton handleClick={this.handleClick} direction='down' colIndex='3' />
+                                <MoveDownButton handleClick={this.handleClick} direction='down' colIndex='4' />
                             </tr>
                         </tbody>
                     </table>
                 </div>
+
             </Layout>
         )
     }

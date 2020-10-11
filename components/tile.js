@@ -7,13 +7,13 @@ export default class Tile extends React.Component{
     }
 
     render() {
-        const key = this.key
+        const id = this.props.id
         const alive = this.props.alive
         const image = this.props.image
         const name = this.props.name
         return (
-        <div key={key} id={name} className={css.tileBody}>
-            {image}
+        <div key={id} id={name} className={css.tileBody}>
+            <img className={css.tileImg} src={image} alt='image'/>
             {name}
         </div>
         )
