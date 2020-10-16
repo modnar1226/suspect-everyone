@@ -13,31 +13,24 @@ export default function Home({ allPostsData, result }) {
         <title>{siteTitle}</title>
       </Head>
       <section className={utilStyles.headingMd}>
-        <p>Hello</p>
+        <p>Hello Ian, are you a Killer or a Detective?</p>
         <p>
-          put more stuff here
+          To gt started, make a decision by clicking one of the options below. 
         </p>
         <h2>
-          <Link href="/game/board" >
-            <a>GameBoard</a>
+          <Link href={{
+            pathname: '/game/board/',
+            query: {role: 'killer'}
+          }} >
+            <a className="btn btn-danger">Killer</a>
+          </Link>
+          &nbsp;
+          <Link href='/game/detective' >
+            <a className="btn btn-primary">Detective</a>
           </Link>
         </h2>
       </section>
-      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-        <h2 className={utilStyles.headingLg}>Blog</h2>
-        <p>Email: {result.email}</p>
-        <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
-            <li className={utilStyles.listItem} key={id}>
-              {title}
-              <br />
-              {id}
-              <br />
-              {date}
-            </li>
-          ))}
-        </ul>
-      </section>
+      
     </Layout>
   )
 }
@@ -58,7 +51,6 @@ export async function getServerSideProps() {
     })
     .contacts()
   ));
-  console.log(result);
   return {
     props: {
       allPostsData,

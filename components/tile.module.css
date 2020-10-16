@@ -1,62 +1,84 @@
-/*
-#grid{
-
+.grid{
+    display:inline-block;
+    width: 60%;
 }
-#Gameboard{
 
-}
-*/
-
-.tileBody:not(first-child){
+.boardRow{
+    display:table;
     margin: 0 auto;
 }
 
-.tileBody {
+
+div.tileBody{
+    display:inline-block;
     width:15vh;
     background-color:white;
     box-shadow: 2px 2px 2px 2px lightgrey;
+    text-align:center;
+    margin-left:1vh;
+    font-family: cursive;
 }
-/*
-.tileBody:after {
 
-}
-*/
 
 .tileImg{
     width: 80%;
-    margin: 0 auto;     
-}
-/*
-.spacer{
-
-}
-*/
-
-.moveColTop{
-    width:16vh;
-    max-height: 15vh;
-} 
-.moveColTop > *{
-    color:black;
-    margin-bottom:0px;
-}
-/*
-.moveColBottom{
-
-}
-.moveRow{
-}
-*/
-
-.moveColBottom > svg{
-    color:black;
+    margin: 0 auto;
 }
 
-.moveRow > svg{
+.colBtn{
+    display:inline-block;
+    width:15vh;
+    margin-left:1vh;
+}
+
+.colBtn > *{
+    display:inline-block;
+    width:15vh;
+    height:10vh;
+}
+
+.tileBody:nth-child(2), .colBtn:nth-child(2){
+    margin-left:0;
+}
+
+.rowLeftBtn{
+    display:inline-block;
+}
+
+.rowRightBtn{
+    display:inline-block;
+}
+
+.rowLeftBtn > svg{
     max-height:15vh;
     color:black;
 }
 
-.moveColTop > svg:hover, .moveColBottom > svg:hover, .moveRow > svg:hover{
+.rowLeftBtn > svg:hover, .colBtn > svg:hover, .rowRightBtn > svg:hover{
     color:grey;
+}
+
+.rowRightBtn > svg{
+    max-height:15vh;
+    color:black;
+}
+
+.colLeft{
+    float:left;
+    width:20%;
+}
+.colRight{
+    float:right;
+    width:20%;
+}
+div.evidenceBody{
+    display:inline-block;
+    width:10vh;
+    background-color:white;
+    box-shadow: 2px 2px 2px 2px lightgrey;
+    text-align:center;
+    margin-left:1vh;
+}
+.evidenceHeader{
+    text-align:center;
 }

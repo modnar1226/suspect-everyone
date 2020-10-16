@@ -9,9 +9,9 @@ export default class MoveUpButton extends React.Component{
 
     render() {
         return (
-            <td onClick={() => this.props.handleClick(this.props.colIndex, this.props.direction)}>
-                <div className={css.moveColTop}><FontAwesomeIcon icon='chevron-up' inverse transform="shrink-8" /></div>
-            </td>
+            <div className={css.colBtn} onClick={() => this.props.handleClick(this.props.colIndex, this.props.direction)}>
+                <FontAwesomeIcon icon='chevron-up' inverse transform="shrink-3" />
+            </div>
         )
     }
 }

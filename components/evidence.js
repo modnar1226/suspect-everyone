@@ -1,7 +1,7 @@
 import React from 'react'
 import css from './tile.module.css'
 
-export default class Tile extends React.Component{
+export default class Evidence extends React.Component{
     constructor (props) {
         super(props)
     }
@@ -12,8 +12,8 @@ export default class Tile extends React.Component{
         const image = this.props.image
         const name = this.props.name
         return (
-        <div key={id} id={name} className={css.tileBody}>
-            <img className={css.tileImg} src={image} alt={name}/>
+        <div key={id} id={name} className={css.evidenceBody}>
+            <img className={css.tileImg} src={image} alt='image'/>
             {name}
         </div>
         )
