@@ -15,13 +15,10 @@ export default function Home({ allPostsData, result }) {
       <section className={utilStyles.headingMd}>
         <p>Hello Ian, are you a Killer or a Detective?</p>
         <p>
-          To gt started, make a decision by clicking one of the options below. 
+          To get started, make a decision by clicking one of the options below. 
         </p>
         <h2>
-          <Link href={{
-            pathname: '/game/board/',
-            query: {role: 'killer'}
-          }} >
+          <Link href={'/game/detective'} >
             <a className="btn btn-danger">Killer</a>
           </Link>
           &nbsp;

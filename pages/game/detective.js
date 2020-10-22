@@ -9,36 +9,46 @@ import Evidence from '../../components/evidence'
 import css from '../../components/tile.module.css'
 import React from 'react'
 import Suspects from '../../mappings/suspectList'
-import suspects from '../../mappings/suspectList'
+import Row from 'react-bootstrap/Row'
 
 export default class GameBoard extends React.Component{
     constructor(props){
         super(props)
         // This binding is necessary to make `this` work in the callback
         this.handleClick = this.handleClick.bind(this)
+        this.handleShow = this.handleShow.bind(this);
         const suspects = this.shuffle(this.cloneSuspectArray(Suspects))
-        //console.log(this.populateBoardArray(suspects))
+        console.log(suspects)
         const evidenceDeck = this.shuffle(this.cloneSuspectArray(Suspects))
         this.state = {
             suspects: this.populateBoardArray(suspects),
             evidenceDeck: evidenceDeck,
-            killCount: 0
+            killCount: 0,
+            modalState: true
         }
         
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        
+    }
     componentWillUnmount() {}
     shuffle(array) {
         return array.sort(() => Math.random() - 0.5) 
     }
     populateBoardArray(susArray){
-        const boardArray = []
-        for (let index = 0; index < 5; index++) {
-            boardArray[index] = susArray.splice(0, 5)
-        }
-        console.log(boardArray)
-        return boardArray
+        var result = susArray.reduce((resultArray, item, index) => {
+            const chunkIndex = Math.floor(index / 5)
+
+            if (!resultArray[chunkIndex]) {
+                resultArray[chunkIndex] = [] // start a new chunk
+            }
+
+            resultArray[chunkIndex].push(item)
+
+            return resultArray
+        }, [])
+        return result
     }
 
     cloneSuspectArray(susArray){
@@ -81,7 +91,7 @@ export default class GameBoard extends React.Component{
                 break
         }
     }
-
+    
     handleClick(index, direction){
         if (direction === 'left' || direction === 'right') {
             this.state.suspects[index] = this.shiftSuspect(this.getSuspectRow(index), direction)
@@ -102,6 +112,10 @@ export default class GameBoard extends React.Component{
         })
     }
 
+    handleShow() {
+        this.setState({ modalState: !this.state.modalState });
+    }
+
     render(){
         const suspects = this.state.suspects
         const killCount = this.state.killCount
@@ -113,9 +127,9 @@ export default class GameBoard extends React.Component{
                     <title>Game Board</title>
                 </Head>
                 <div className={css.colLeft}>
-                    <h3>
+                    <h4>
                         Welcome Detective. There is a killer on the loose and your goal is to catch them before they kill 5 people. To find them you may do 1 of 3 things each turn.
-                    </h3>
+                    </h4>
                     <hr/>
                     <ol>
                         <li>You may shift the board in any direction 1 time.</li>
@@ -123,6 +137,14 @@ export default class GameBoard extends React.Component{
                         <li>You may try to make an arrest by selecting a tile adjacent to your current location.</li>
                     </ol>
                     <hr/>
+                    <div className={css.evidenceHeader}>
+                        <h5 className={css.evidenceHeader}>Secret Identity</h5>
+                            {evidenceDeck.slice(0, 1).map((alibi) => {
+                                return (
+                                    <Evidence name={alibi.name} image={alibi.image}></Evidence>
+                                )
+                            })}
+                    </div>
                     <div>
                         <h5 className={css.evidenceHeader}>Alibis</h5>
                         {evidenceDeck.slice(0, 3).map((alibi) => {
@@ -138,7 +160,7 @@ export default class GameBoard extends React.Component{
                     </div>
                 </div>
                 <div className={css.grid}>
-                    <div className={css.boardRow}>
+                    <Row className={css.boardRow}>
                         <div className={css.rowLeftBtn}></div>
                         <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='0' />
                         <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='1' />
@@ -146,23 +168,22 @@ export default class GameBoard extends React.Component{
                         <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='3' />
                         <MoveUpButton handleClick={this.handleClick} direction='up' colIndex='4' />
                         <div className={css.rowLeftBtn}></div>
-                    </div>
+                    </Row>
                     {suspects.map((i, row) => {
                         return (
-                            <div key={`boardRow-${row}`} className={css.boardRow}>
+                            <Row key={`boardRow-${row}`} className={css.boardRow}>
                                 <MoveLeftButton key={`0-${row}`} handleClick={this.handleClick} direction='left' colIndex={row} />
                                 {i.map(function (suspect) {
-                                    console.log()
                                     return (
                                         <Tile key={suspect.id} name={suspect.name} alive={suspect.alive} image={suspect.image}></Tile>
                                     )
                                 })
                                 }
                                 <MoveRightButton key={`1-${row}`} handleClick={this.handleClick} direction='right' colIndex={row} />
-                            </div>
+                            </Row>
                         )
                     })}
-                    <div className={css.boardRow}>
+                    <Row className={css.boardRow}>
                         <div className={css.rowLeftBtn}></div>
                         <MoveDownButton handleClick={this.handleClick} direction='down' colIndex='0' />
                         <MoveDownButton handleClick={this.handleClick} direction='down' colIndex='1' />
@@ -171,10 +192,10 @@ export default class GameBoard extends React.Component{
                         <MoveDownButton handleClick={this.handleClick} direction='down' colIndex='4' />
                         <div className={css.rowLeftBtn}></div>
 
-                    </div>
+                    </Row>
                 </div>
                 <div className={css.colRight}>
-                <h3>People Killed: {killCount}</h3>
+                    <h4>People Killed: {killCount}</h4>
                 </div>
             </Layout>
         )

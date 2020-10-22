@@ -1,3 +1,6 @@
+.mZeroAuto{
+    margin:0 auto;
+}
 .grid{
     display:inline-block;
     width: 60%;
