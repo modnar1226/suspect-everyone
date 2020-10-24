@@ -10,29 +10,39 @@ import css from '../../components/tile.module.css'
 import React from 'react'
 import Suspects from '../../mappings/suspectList'
 import Row from 'react-bootstrap/Row'
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
 
 export default class GameBoard extends React.Component{
     constructor(props){
         super(props)
         // This binding is necessary to make `this` work in the callback
         this.handleClick = this.handleClick.bind(this)
-        this.handleShow = this.handleShow.bind(this);
+        this.handleShow = this.handleShow.bind(this)
+        this.handleClose = this.handleClose.bind(this)
+        
         const suspects = this.shuffle(this.cloneSuspectArray(Suspects))
-        console.log(suspects)
         const evidenceDeck = this.shuffle(this.cloneSuspectArray(Suspects))
+        const alibiList = evidenceDeck.splice(0, 4)
+        const discardPile = []
         this.state = {
             suspects: this.populateBoardArray(suspects),
             evidenceDeck: evidenceDeck,
             killCount: 0,
-            modalState: true
+            modalState: true,
+            secretIdentity: [],
+            alibiList: alibiList
         }
-        
+        this.setIdentity = this.setIdentity.bind(this)
     }
 
     componentDidMount() {
         
     }
-    componentWillUnmount() {}
+    componentWillUnmount() {
+
+    }
+
     shuffle(array) {
         return array.sort(() => Math.random() - 0.5) 
     }
@@ -61,6 +71,7 @@ export default class GameBoard extends React.Component{
         })
     }
 
+    // returns the array of suspects at 'index'
     getSuspectRow(index) {
         return this.state.suspects[index]
     }
@@ -91,6 +102,14 @@ export default class GameBoard extends React.Component{
                 break
         }
     }
+
+    setIdentity(index){
+        this.handleClose();
+        this.setState({
+            secretIdentity: [this.state.alibiList[index]],
+            alibiList: this.state.alibiList.splice(index,1)
+        })
+    }
     
     handleClick(index, direction){
         if (direction === 'left' || direction === 'right') {
@@ -101,7 +120,6 @@ export default class GameBoard extends React.Component{
             const oldsuspects = this.state.suspects
             this.state.suspects = []
             oldsuspects.forEach((row, i) => {
-                console.log(newCols[i])
                 row[index] = newCols[i]
                 this.state.suspects.push(row) 
             })
@@ -113,14 +131,20 @@ export default class GameBoard extends React.Component{
     }
 
     handleShow() {
-        this.setState({ modalState: !this.state.modalState });
+        this.setState({ modalState: !this.state.modalState })
+    }
+    handleClose(){
+        this.setState({ modalState: !this.state.modalState })
     }
 
     render(){
         const suspects = this.state.suspects
         const killCount = this.state.killCount
         const evidenceDeck = this.state.evidenceDeck
-        //console.log(evidenceDeck)
+        const modalState = this.state.modalState
+        const alibiList = this.state.alibiList
+        const secretIdentity = this.state.secretIdentity
+
         return (
             <Layout>
                 <Head>
@@ -139,19 +163,15 @@ export default class GameBoard extends React.Component{
                     <hr/>
                     <div className={css.evidenceHeader}>
                         <h5 className={css.evidenceHeader}>Secret Identity</h5>
-                            {evidenceDeck.slice(0, 1).map((alibi) => {
-                                return (
-                                    <Evidence name={alibi.name} image={alibi.image}></Evidence>
-                                )
-                            })}
-                    </div>
-                    <div>
-                        <h5 className={css.evidenceHeader}>Alibis</h5>
-                        {evidenceDeck.slice(0, 3).map((alibi) => {
+                        {secretIdentity.map((alibi, i) => {
                             return (
-                                <Evidence name={alibi.name} image={alibi.image}></Evidence>
+                                <Evidence setIdentity={this.setIdentity} index={i} name={alibi.name} image={alibi.image}></Evidence>
                             )
                         })}
+                    </div>
+                    <hr />
+                    <div>
+                        <h5 className={css.evidenceHeader}>Alibis</h5>
                     </div>
                     <hr/>
                     <div className={css.evidenceHeader}>
@@ -197,6 +217,20 @@ export default class GameBoard extends React.Component{
                 <div className={css.colRight}>
                     <h4>People Killed: {killCount}</h4>
                 </div>
+                <Modal show={modalState} onHide={this.handleClose} animation={false} backdrop="static" keyboard={false}>
+                    <Modal.Header>
+                        <Modal.Title>Select your secret identity</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div>
+                            {alibiList.map((alibi, i) => {
+                                return (
+                                    <Evidence setIdentity={this.setIdentity} index={i} name={alibi.name} image={alibi.image}></Evidence>
+                                )
+                            })}
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </Layout>
         )
     }   

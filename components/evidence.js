@@ -12,7 +12,7 @@ export default class Evidence extends React.Component{
         const image = this.props.image
         const name = this.props.name
         return (
-        <div key={id} id={name} className={css.evidenceBody}>
+            <div key={id} id={name} className={css.evidenceBody} onClick={() => this.props.setIdentity(this.props.index)}>
             <img className={css.tileImg} src={image} alt='image'/>
             {name}
         </div>
