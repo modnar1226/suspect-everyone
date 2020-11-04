@@ -10,7 +10,7 @@ export default class MoveRightButton extends React.Component{
     render() {
         return (
             <div className={css.rowRightBtn} onClick={() => this.props.handleClick(this.props.index, this.props.direction)}>
-                <FontAwesomeIcon icon='chevron-right' fixedWidth/>
+                <FontAwesomeIcon icon='chevron-right' fixedWidth transform="grow-20"/>
             </div>
         )
     }
