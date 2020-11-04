@@ -15,8 +15,8 @@ services:
             connector: mysql
             host: host.docker.internal
             schema: cms
-            user: app
-            password: BamBoozale
+            user: 
+            password: 
             rawAccess: true
             port: '3306'
             migrations: false
