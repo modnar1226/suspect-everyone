@@ -9,8 +9,8 @@ export default class MoveLeftButton extends React.Component{
     
     render() {
         return (
-            <div className={css.rowLeftBtn} onClick={() => this.props.handleClick(this.props.colIndex, this.props.direction)}>
-                <FontAwesomeIcon icon='chevron-left' size="xs" inverse transform="shrink-8" />
+            <div className={css.rowLeftBtn} onClick={() => this.props.handleClick(this.props.index, this.props.direction)}>
+                <FontAwesomeIcon icon='chevron-left' fixedWidth />
             </div>
         )
     }

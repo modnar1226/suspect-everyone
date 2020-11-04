@@ -20,6 +20,11 @@ div.tileBody{
     text-align:center;
     margin-left:1vh;
     font-family: cursive;
+
+}
+
+div.arrestAttempt{
+    border:5px solid #00D019
 }
 
 
@@ -37,7 +42,7 @@ div.tileBody{
 .colBtn > *{
     display:inline-block;
     width:15vh;
-    height:10vh;
+    margin-left:1vh;
 }
 
 .tileBody:nth-child(2), .colBtn:nth-child(2){
@@ -70,11 +75,26 @@ div.tileBody{
     float:left;
     width:20%;
 }
+
 .colRight{
     float:right;
     width:20%;
 }
+
 div.evidenceBody{
+    display:inline-block;
+    width:15vh;
+    background-color:white;
+    box-shadow: 2px 2px 2px 2px lightgrey;
+    text-align:center;
+    margin-left:1vh;
+}
+
+.evidenceHeader{
+    text-align:center;
+}
+
+div.alibiBody{
     display:inline-block;
     width:10vh;
     background-color:white;
@@ -82,6 +102,11 @@ div.evidenceBody{
     text-align:center;
     margin-left:1vh;
 }
-.evidenceHeader{
-    text-align:center;
+
+.txtBlue{
+    color: blue;
+}
+
+.txtRed{
+    color: red;
 }

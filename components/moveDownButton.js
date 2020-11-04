@@ -9,8 +9,8 @@ export default class MoveDownButton extends React.Component{
 
     render() {
         return (
-            <div className={css.colBtn} onClick={() => this.props.handleClick(this.props.colIndex, this.props.direction)}>
-                <FontAwesomeIcon icon='chevron-down' inverse transform="shrink-3" />
+            <div className={css.colBtn} onClick={() => this.props.handleClick(this.props.index, this.props.direction)}>
+                <FontAwesomeIcon icon='chevron-down' inverse transform="shrink-8" />
             </div>
         )
     }
