@@ -6,12 +6,6 @@
     width: 60%;
 }
 
-.boardRow{
-    display:table;
-    margin: 0 auto;
-}
-
-
 div.tileBody{
     display:inline-block;
     width:15vh;
@@ -34,51 +28,29 @@ div.arrestAttempt{
 }
 
 .colBtn{
-    display:inline-block;
-    width:15vh;
-    margin-left:1vh;
+    padding:0 6vh;
+    width:16.1vh;
 }
 
-.colBtn > *{
-    display:inline-block;
-    width:15vh;
-    margin-left:1vh;
-}
 
 .tileBody:nth-child(2), .colBtn:nth-child(2){
     margin-left:0;
 }
 
 .rowLeftBtn{
-    display:inline-block;
+    margin: auto 0;
 }
 
 .rowRightBtn{
-    display:inline-block;
+    margin: auto 0;
 }
 
-.rowLeftBtn > svg{
-    max-height:15vh;
+.rowLeftBtn > svg, .rowRightBtn > svg, .colBtn {
     color:black;
 }
 
 .rowLeftBtn > svg:hover, .colBtn > svg:hover, .rowRightBtn > svg:hover{
     color:grey;
-}
-
-.rowRightBtn > svg{
-    max-height:15vh;
-    color:black;
-}
-
-.colLeft{
-    float:left;
-    width:20%;
-}
-
-.colRight{
-    float:right;
-    width:20%;
 }
 
 div.evidenceBody{
@@ -109,4 +81,8 @@ div.alibiBody{
 
 .txtRed{
     color: red;
+}
+.spacer{
+    display:inline-block;
+    width:3vh;
 }

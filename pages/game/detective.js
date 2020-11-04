@@ -382,7 +382,7 @@ export default class GameBoard extends React.Component{
                 <Head>
                     <title>Game Board</title>
                 </Head>
-                <Row className="justify-content-md-center">
+                <Row>
                     <Col md={2}>
                         <ol>
                             <li>You may shift the board in any direction 1 time.</li>
@@ -414,24 +414,23 @@ export default class GameBoard extends React.Component{
                         </div>
                     </Col>
                     <Col md={8}>
-                        <Row className={css.boardRow}>
-                                <MoveUpButton handleClick={this.handleClick} direction='up' index='0' />
-                                <MoveUpButton handleClick={this.handleClick} direction='up' index='1' />
-                                <MoveUpButton handleClick={this.handleClick} direction='up' index='2' />
-                                <MoveUpButton handleClick={this.handleClick} direction='up' index='3' />
-                                <MoveUpButton handleClick={this.handleClick} direction='up' index='4' />
+                        <Row className="justify-content-md-center">
+                            <div className={css.spacer}></div>
+                            <MoveUpButton handleClick={this.handleClick} direction='up' index='0' />
+                            <MoveUpButton handleClick={this.handleClick} direction='up' index='1' />
+                            <MoveUpButton handleClick={this.handleClick} direction='up' index='2' />
+                            <MoveUpButton handleClick={this.handleClick} direction='up' index='3' />
+                            <MoveUpButton handleClick={this.handleClick} direction='up' index='4' />
                         </Row>
                         {suspects.map((row, rowIndex) => {
                             return (
-                                <Row key={`boardRow-${rowIndex}`} className={css.boardRow}>
-                                        <MoveLeftButton key={`0-${rowIndex}`} handleClick={this.handleClick} direction='left' index={rowIndex} />
-                                    {row.map((suspect, colIndex) => {
+                                <Row key={`boardRow-${rowIndex}`} className="justify-content-md-center">
+                                    <MoveLeftButton key={`0-${rowIndex}`} handleClick={this.handleClick} direction='left' index={rowIndex} />
+                                    {row.map((suspect) => {
                                         return (
                                                 <Tile
                                                     key={suspect.id}
                                                     id={suspect.id}
-                                                    //xIndex={colIndex}
-                                                    //yIndex={rowIndex}
                                                     name={suspect.name}
                                                     alive={suspect.alive}
                                                     image={this.pickImage(suspect)}
@@ -443,12 +442,13 @@ export default class GameBoard extends React.Component{
                                 </Row>
                             )
                         })}
-                        <Row className={css.boardRow}>
-                                <MoveDownButton handleClick={this.handleClick} direction='down' index='0' />
-                                <MoveDownButton handleClick={this.handleClick} direction='down' index='1' />
-                                <MoveDownButton handleClick={this.handleClick} direction='down' index='2' />
-                                <MoveDownButton handleClick={this.handleClick} direction='down' index='3' />
-                                <MoveDownButton handleClick={this.handleClick} direction='down' index='4' />
+                        <Row className="justify-content-md-center">
+                            <div className={css.spacer}></div>
+                            <MoveDownButton handleClick={this.handleClick} direction='down' index='0' />
+                            <MoveDownButton handleClick={this.handleClick} direction='down' index='1' />
+                            <MoveDownButton handleClick={this.handleClick} direction='down' index='2' />
+                            <MoveDownButton handleClick={this.handleClick} direction='down' index='3' />
+                            <MoveDownButton handleClick={this.handleClick} direction='down' index='4' />
                         </Row>
                     </Col>
                     <Col md={2}>
