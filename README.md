@@ -1,4 +1,4 @@
-Requires node.js and npm.
+Tested on node.js version 12.18.3 and npm version 6.14.6.
 
 To use, first clone the repository.
 
