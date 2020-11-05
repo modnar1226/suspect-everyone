@@ -88,16 +88,12 @@ export default class GameBoard extends React.Component{
             const randLocation = availableKills[Math.floor(Math.random() * availableKills.length)]
             const moveButton = moveOptions[Math.floor(Math.random() * moveOptions.length)]
             let availableMoves = [
-                //() => { this.changeIdentity(this.state.killersIdentity[0].id) },
-                //() => { this.moveBoard(moveButton[1], moveButton[0], this.DETECTIVE) },
+                () => { this.changeIdentity(this.state.killersIdentity[0].id) },
+                () => { this.moveBoard(moveButton[1], moveButton[0], this.DETECTIVE) },
             ]
             if (randLocation !== undefined) {
                 availableMoves.push(() => { this.killSuspect(randLocation) })
                 availableMoves.push(() => { this.killSuspect(randLocation) })
-
-                //TODO
-                // if we kill someone we need to look in the players alibi list to see if they possess the card for the person just killed, and remove it.
-                // the player should get one when their turn starts
             }
             // execute the move
             const options = this.shuffle(availableMoves)
