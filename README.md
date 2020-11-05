@@ -1,1 +1,10 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+Requires node.js and npm.
+
+To use, first clone the repository.
+`git clone https://github.com/modnar1226/SuspectEveryone`
+
+Next move to the SuspectEveryone directory.
+`cd SuspectEveryone`
+
+Then start a server on port 3000.
+`npm run dev`
