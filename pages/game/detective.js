@@ -433,7 +433,7 @@ export default class GameBoard extends React.Component{
                                                     id={suspect.id}
                                                     name={suspect.name}
                                                     alive={suspect.alive}
-                                                    image={this.pickImage(suspect)}
+                                                    image={suspect.image}
                                                 ></Tile>
                                             )
                                         })
