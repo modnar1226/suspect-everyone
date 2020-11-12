@@ -15,6 +15,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import Alibi from '../../components/alibi'
 import Suspect from '../../components/suspect'
+import SecretIdentity from '../../components/secretIdentity'
 
 export default class GameBoard extends React.Component{
     constructor(props){
@@ -83,17 +84,17 @@ export default class GameBoard extends React.Component{
             ['right', 0], ['right', 1], ['right', 2], ['right', 3], ['right', 4]
         ]
         setTimeout(() => {
-            const location = this.getLocation(this.state.killersIdentity[0].id)
-            const availableKills = this.getAdjacent(location)
-            const randLocation = availableKills[Math.floor(Math.random() * availableKills.length)]
+            const killersLocation = this.getLocation(this.state.killersIdentity[0].id)
+            const availableKills = this.getAdjacent(killersLocation)
+            const location = availableKills[Math.floor(Math.random() * availableKills.length)]
             const moveButton = moveOptions[Math.floor(Math.random() * moveOptions.length)]
             let availableMoves = [
                 () => { this.changeIdentity(this.state.killersIdentity[0].id) },
                 () => { this.moveBoard(moveButton[1], moveButton[0], this.DETECTIVE) },
             ]
-            if (randLocation !== undefined) {
-                availableMoves.push(() => { this.killSuspect(randLocation) })
-                availableMoves.push(() => { this.killSuspect(randLocation) })
+            if (location !== undefined) {
+                availableMoves.push(() => { this.killSuspect(location) })
+                availableMoves.push(() => { this.killSuspect(location) })
 
                 //TODO
                 // if we kill someone we need to look in the players alibi list to see if they possess the card for the person just killed, and remove it.
@@ -114,18 +115,61 @@ export default class GameBoard extends React.Component{
     killSuspect(location){
         let newSuspectList = this.state.suspects
         newSuspectList[location[0]][location[1]].alive = false
+        const suspectId = newSuspectList[location[0]][location[1]].id
         const killCount = this.state.killCount + 1
-        if (newSuspectList[location[0]][location[1]].id === this.state.secretIdentity[0].id || killCount === 6) {
+        if (suspectId === this.state.secretIdentity[0].id || killCount === 25) {
             this.setState({
                 killCount: killCount,
                 lost:true,
             })
         } else {
+            const alibiKilled = this.wasAlibiKilled(suspectId);
+            
+            if (alibiKilled[0]) {
+                this.markAlibiKilled(alibiKilled[1])
+            } else {
+                this.markEvidenceKilled(suspectId)
+            }
             this.setState({
                 suspects: newSuspectList,
                 killCount: killCount,
                 whosTurn: this.DETECTIVE
             })
+        }
+    }
+
+    wasAlibiKilled(suspectId){
+        let wasKilled = [false]
+        for (const [aIndex, alibi] of this.state.alibiList.entries()) {
+            if (suspectId === alibi.id) {
+                wasKilled[0] = true
+                wasKilled[1] = aIndex
+                break
+            }
+        }
+
+        return wasKilled
+    }
+
+    markAlibiKilled(index){
+        let newAlibiList = this.state.alibiList
+        newAlibiList[index].alive = false
+        this.setState({
+            alibiList: newAlibiList
+        })
+    }
+
+    markEvidenceKilled(suspectId){
+        let newEvidenceDeck = this.state.evidenceDeck
+        for (const [eIndex, evidence] of this.state.evidenceDeck.entries()) {
+            if (suspectId === evidence.id) {
+                console.log(`evidence killed name: ` + evidence.name)
+                newEvidenceDeck[eIndex].alive = false
+                this.setState({
+                    evidenceDeck : newEvidenceDeck
+                })
+                break
+            }
         }
     }
 
@@ -251,6 +295,11 @@ export default class GameBoard extends React.Component{
             secretIdentity: [secretIdentity],
             alibiList: this.state.playerSelect,
             playerSelect: []
+        }, () => { // this runs after setState
+            const killersLocation = this.getLocation(this.state.killersIdentity[0].id)
+            const availableKills = this.getAdjacent(killersLocation)
+            const location = availableKills[Math.floor(Math.random() * availableKills.length)]
+            this.killSuspect(location)
         })
     }
     
@@ -274,9 +323,17 @@ export default class GameBoard extends React.Component{
         const location = this.getLocation(suspectId)
         let newSuspectList = this.state.suspects
         let alibiList = this.state.alibiList
-        alibiList.splice(alibiIndex,1)
+        const clicked = alibiList.splice(alibiIndex,1)
 
-        
+        if (!clicked[0].alive) {
+            if (this.state.evidenceDeck.length) {
+                alibiList.push(this.state.evidenceDeck.splice(0, 1)[0])
+                this.setState({
+                    alibiList: alibiList
+                })
+                return;
+            }
+        }
         newSuspectList[location[0]][location[1]].alibied = true
         this.setState({
             suspects: newSuspectList,
@@ -287,16 +344,6 @@ export default class GameBoard extends React.Component{
         //this should be done after the killers turn
         if (this.state.evidenceDeck.length) {
             alibiList.push(this.state.evidenceDeck.splice(0, 1)[0])
-        }
-    }
-
-    pickImage(suspect){
-        if (!suspect.alive) {
-            return '/images/IdaKilled.jpg'
-        } else if(suspect.alibied) {
-            return '/images/IdaAlibied.jpg'
-        } else {
-            return '/images/Ida.jpg'
         }
     }
 
@@ -355,7 +402,18 @@ export default class GameBoard extends React.Component{
         //draw form the evidience deck
         if (this.state.evidenceDeck.length) {
             newKillerIdentity = this.state.evidenceDeck.splice(0, 1)
+            console.log(newKillerIdentity[0])
+            // if they drew a dead person, thier turn is over
+            // still need to update whos turn and persist changes to the evidence deck
+            if (!newKillerIdentity[0].alive) {
+                this.setState({
+                    evidenceDeck: this.state.evidenceDeck,
+                    whosTurn: this.DETECTIVE
+                })
+                return
+            }
         }
+
         newSuspectList[location[0]][location[1]].alibied = true
         this.setState({
             suspects: newSuspectList,
@@ -394,16 +452,27 @@ export default class GameBoard extends React.Component{
                             <h5 >Secret Identity</h5>
                             {secretIdentity.map((alibi, i) => {
                                 return (
-                                    <Tile key={`secId-${i}`} id={alibi.id} name={alibi.name} alive={alibi.alive} image={alibi.image}></Tile>
+                                    <SecretIdentity key={`secId-${i}`} id={alibi.id} name={alibi.name} alive={alibi.alive} image={alibi.image}></SecretIdentity>
                                 )
                             })}
                         </div>
                         <hr />
                         <div className={css.evidenceHeader}>
                             <h5 className={css.evidenceHeader}>Alibis</h5>
+                            <Row>
+                                Remove dead alibis, and draw new card by clicking them. 
+                            </Row>
                             {alibiList.map((alibi, i) => {
                                 return (
-                                    <Alibi key={`alibi-${alibi.id}`} alibiSuspect={this.alibiSuspect} alibiIndex={i} susId={alibi.id} name={alibi.name} image={alibi.image}></Alibi>
+                                    <Alibi 
+                                        key={`alibi-${alibi.id}`}
+                                        alibiSuspect={this.alibiSuspect}
+                                        alibiIndex={i}
+                                        susId={alibi.id}
+                                        name={alibi.name}
+                                        image={alibi.image}
+                                        alive={alibi.alive}>
+                                    </Alibi>
                                 )
                             })}
                         </div>
@@ -434,6 +503,8 @@ export default class GameBoard extends React.Component{
                                                     name={suspect.name}
                                                     alive={suspect.alive}
                                                     image={suspect.image}
+                                                    alibiedImage={suspect.alibiedImage}
+                                                    alibied={suspect.alibied}
                                                 ></Tile>
                                             )
                                         })
@@ -456,10 +527,11 @@ export default class GameBoard extends React.Component{
                             {whosTurn}'s Turn                      
                         </h2>
                         <h4>People Killed: {killCount}</h4>
+                        {this.state.killersIdentity[0].name}
                     </Col>
                 </Row>
                 
-                <Modal show={modalState} onHide={this.handleClose} animation={false} backdrop="static" keyboard={false}>
+                <Modal show={modalState} animation={false} backdrop="static" keyboard={false}>
                     <Modal.Header dialogclassname={`justify-content: center`}>
                         <Modal.Title>
                             Welcome Detective.

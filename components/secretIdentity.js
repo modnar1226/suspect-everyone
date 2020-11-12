@@ -1,7 +1,7 @@
 import React from 'react'
 import css from './tile.module.css'
 
-export default class Tile extends React.Component{
+export default class SecretIdentity extends React.Component{
     constructor (props) {
         super(props)
     }

@@ -75,6 +75,8 @@ div.alibiBody{
     box-shadow: 2px 2px 2px 2px lightgrey;
     text-align:center;
     margin-left:1vh;
+    position: relative;
+
 }
 
 .txtBlue{
@@ -90,6 +92,12 @@ div.alibiBody{
 }
 
 .tileBody  > img.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.alibiBody  > img.overlay{
     position: absolute;
     top: 0;
     left: 0;
