@@ -126,6 +126,8 @@ export default class GameBoard extends React.Component{
             } else {
                 this.markEvidenceKilled(suspectId)
             }
+            // condtional on whether the suspect was killed
+            //this.removeAlibiFromPlayer(newSuspectList[location[0]][location[1]].id)
             this.setState({
                 suspects: newSuspectList,
                 killCount: killCount,
@@ -337,13 +339,15 @@ export default class GameBoard extends React.Component{
         newSuspectList[location[0]][location[1]].alibied = true
         this.setState({
             suspects: newSuspectList,
-            alibiList: alibiList
         })
         this.killersTurn()
 
         //this should be done after the killers turn
         if (this.state.evidenceDeck.length) {
             alibiList.push(this.state.evidenceDeck.splice(0, 1)[0])
+            this.setState({
+                alibiList: alibiList
+            })
         }
     }
 
@@ -419,6 +423,25 @@ export default class GameBoard extends React.Component{
             evidenceDeck: this.state.evidenceDeck,
             killersIdentity: newKillerIdentity,
             whosTurn: this.DETECTIVE
+        })
+    }
+
+    removeAlibiFromPlayer(suspectId){
+        let alibiList = this.state.alibiList
+        for (const [alibiIndex, alibi] of alibiList.entries()) {
+            // check list for killed person's id
+            if(alibi.id === suspectId) {
+                // remove the alibi
+                alibiList.splice(alibiIndex, 1)
+                // add a card to the alibi list if there are some to choose from
+                if (this.state.evidenceDeck.length) {
+                    alibiList.push(this.state.evidenceDeck.splice(0, 1)[0])
+                }
+            }
+        }
+
+        this.setState({
+            alibiList: alibiList
         })
     }
 
