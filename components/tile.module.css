@@ -14,6 +14,8 @@ div.tileBody{
     text-align:center;
     margin-left:1vh;
     font-family: cursive;
+    position: relative;
+
 
 }
 
@@ -85,4 +87,10 @@ div.alibiBody{
 .spacer{
     display:inline-block;
     width:3vh;
+}
+
+.tileBody  > img.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
 }

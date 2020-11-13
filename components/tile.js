@@ -11,9 +11,14 @@ export default class Tile extends React.Component{
         const alive = this.props.alive
         const image = this.props.image
         const name = this.props.name
+        let killed = null
+        if (!alive) {
+            killed = <img key={`oId-${id}`} className={css.overlay} src={`/images/deadOverlay.png`} alt={name} />
+        }
         return (
         <div key={`tileId-${id}`} id={name} className={css.tileBody}>
-                <img key={`imgId-${id}`} className={css.tileImg} src={image} alt={name}/>
+            <img key={`imgId-${id}`} className={css.tileImg} src={image} alt={name}/>
+            {killed}
             {name}
         </div>
         )
