@@ -1,7 +1,7 @@
 import React from 'react'
 import css from './tile.module.css'
 
-export default class Tile extends React.Component{
+export default class SecretIdentity extends React.Component{
     constructor (props) {
         super(props)
     }
@@ -11,14 +11,12 @@ export default class Tile extends React.Component{
         const alive = this.props.alive
         let image = (this.props.alibied ? this.props.alibiedImage : this.props.image)
         const name = this.props.name
-        const isPlayer = (this.props.isPlayer ? css.markPlayer : '')
-        console.log(isPlayer)
         let killed = null
         if (!alive) {
-            killed = <img key={`oId-${id}`} className={`${css.overlay}`} src={`/images/deadOverlay.png`} alt={name} />
+            killed = <img key={`oId-${id}`} className={css.overlay} src={`/images/deadOverlay.png`} alt={name} />
         }
         return (
-        <div key={`tileId-${id}`} id={name} className={`${css.tileBody} ${isPlayer}`}>
+        <div key={`tileId-${id}`} id={name} className={css.tileBody}>
             <img key={`imgId-${id}`} className={css.tileImg} src={image} alt={name}/>
             {killed}
             {name}
