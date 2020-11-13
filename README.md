@@ -4,6 +4,10 @@ To use, first clone the repository.
 
 `git clone https://github.com/modnar1226/suspect-everyone.git`
 
+Or download the package zip file
+
+
+
 Next move to the suspect-everyone directory.
 
 `cd suspect-everyone`
