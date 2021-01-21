@@ -12,8 +12,10 @@ div.tileBody{
     background-color:white;
     box-shadow: 2px 2px 2px 2px lightgrey;
     text-align:center;
-    margin-left:1vh;
+    margin: 1vh;
     font-family: cursive;
+    position: relative;
+
 
 }
 
@@ -29,7 +31,7 @@ div.arrestAttempt{
 
 .colBtn{
     padding:0 6vh;
-    width:16.1vh;
+    width:17vh;
 }
 
 
@@ -38,7 +40,7 @@ div.arrestAttempt{
 }
 
 .rowLeftBtn{
-    margin: auto 0;
+    margin: auto 1vh;
 }
 
 .rowRightBtn{
@@ -73,6 +75,8 @@ div.alibiBody{
     box-shadow: 2px 2px 2px 2px lightgrey;
     text-align:center;
     margin-left:1vh;
+    position: relative;
+
 }
 
 .txtBlue{
@@ -84,5 +88,21 @@ div.alibiBody{
 }
 .spacer{
     display:inline-block;
-    width:3vh;
+    width:4vh;
+}
+
+.tileBody  > img.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.alibiBody  > img.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.markPlayer{
+    box-shadow: 0px 0px 5px 5px green !important;
 }

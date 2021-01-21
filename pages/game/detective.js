@@ -20,6 +20,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import Alibi from '../../components/alibi'
 import Suspect from '../../components/suspect'
+import SecretIdentity from '../../components/secretIdentity'
 
 export default class GameBoard extends React.Component{
     constructor(props){
@@ -80,7 +81,7 @@ export default class GameBoard extends React.Component{
 
     killersTurn(){
         this.toggleTurnTxt(this.KILLER)
-        const randomTime = Math.floor(Math.random() * 1500) + 500
+        const randomTime = Math.floor(Math.random() * 4000) + 1500
         const moveOptions = [
             ['up', 0], ['up', 1], ['up', 2], ['up', 3], ['up', 4],
             ['down', 0],['down', 1],['down', 2],['down', 3],['down', 4],
@@ -88,17 +89,17 @@ export default class GameBoard extends React.Component{
             ['right', 0], ['right', 1], ['right', 2], ['right', 3], ['right', 4]
         ]
         setTimeout(() => {
-            const location = this.getLocation(this.state.killersIdentity[0].id)
-            const availableKills = this.getAdjacent(location)
-            const randLocation = availableKills[Math.floor(Math.random() * availableKills.length)]
+            const killersLocation = this.getLocation(this.state.killersIdentity[0].id)
+            const availableKills = this.getAdjacent(killersLocation)
+            const location = availableKills[Math.floor(Math.random() * availableKills.length)]
             const moveButton = moveOptions[Math.floor(Math.random() * moveOptions.length)]
             let availableMoves = [
                 () => { this.changeIdentity(this.state.killersIdentity[0].id) },
                 () => { this.moveBoard(moveButton[1], moveButton[0], this.DETECTIVE) },
             ]
-            if (randLocation !== undefined) {
-                availableMoves.push(() => { this.killSuspect(randLocation) })
-                availableMoves.push(() => { this.killSuspect(randLocation) })
+            if (location !== undefined) {
+                availableMoves.push(() => { this.killSuspect(location) })
+                availableMoves.push(() => { this.killSuspect(location) })
             }
             // execute the move
             const options = this.shuffle(availableMoves)
@@ -115,20 +116,62 @@ export default class GameBoard extends React.Component{
     killSuspect(location){
         let newSuspectList = this.state.suspects
         newSuspectList[location[0]][location[1]].alive = false
+        const suspectId = newSuspectList[location[0]][location[1]].id
         const killCount = this.state.killCount + 1
-        if (newSuspectList[location[0]][location[1]].id === this.state.secretIdentity[0].id || killCount === 6) {
+        if (suspectId === this.state.secretIdentity[0].id || killCount === 6) {
             this.setState({
                 killCount: killCount,
                 lost:true,
             })
         } else {
+            const alibiKilled = this.wasAlibiKilled(suspectId);
+            
+            if (alibiKilled[0]) {
+                this.markAlibiKilled(alibiKilled[1])
+            } else {
+                this.markEvidenceKilled(suspectId)
+            }
             // condtional on whether the suspect was killed
-            this.removeAlibiFromPlayer(newSuspectList[location[0]][location[1]].id)
+            //this.removeAlibiFromPlayer(newSuspectList[location[0]][location[1]].id)
             this.setState({
                 suspects: newSuspectList,
                 killCount: killCount,
                 whosTurn: this.DETECTIVE
             })
+        }
+    }
+
+    wasAlibiKilled(suspectId){
+        let wasKilled = [false]
+        for (const [aIndex, alibi] of this.state.alibiList.entries()) {
+            if (suspectId === alibi.id) {
+                wasKilled[0] = true
+                wasKilled[1] = aIndex
+                break
+            }
+        }
+
+        return wasKilled
+    }
+
+    markAlibiKilled(index){
+        let newAlibiList = this.state.alibiList
+        newAlibiList[index].alive = false
+        this.setState({
+            alibiList: newAlibiList
+        })
+    }
+
+    markEvidenceKilled(suspectId){
+        let newEvidenceDeck = this.state.evidenceDeck
+        for (const [eIndex, evidence] of this.state.evidenceDeck.entries()) {
+            if (suspectId === evidence.id) {
+                newEvidenceDeck[eIndex].alive = false
+                this.setState({
+                    evidenceDeck : newEvidenceDeck
+                })
+                break
+            }
         }
     }
 
@@ -250,10 +293,20 @@ export default class GameBoard extends React.Component{
         this.handleClose();
         const secretIdentity = this.state.playerSelect[index]
         this.state.playerSelect.splice(index, 1)
+        const playersLocation = this.getLocation(secretIdentity.id)
+        let newSuspectArray = this.state.suspects
+        newSuspectArray[playersLocation[0]][playersLocation[1]].isPlayer = true
         this.setState({
+            suspects: newSuspectArray,
             secretIdentity: [secretIdentity],
             alibiList: this.state.playerSelect,
             playerSelect: []
+        }, () => { // this runs after setState
+            // killer goes first and must make a kill
+            const killersLocation = this.getLocation(this.state.killersIdentity[0].id)
+            const availableKills = this.getAdjacent(killersLocation)
+            const location = availableKills[Math.floor(Math.random() * availableKills.length)]
+            this.killSuspect(location)
         })
     }
     
@@ -277,8 +330,17 @@ export default class GameBoard extends React.Component{
         const location = this.getLocation(suspectId)
         let newSuspectList = this.state.suspects
         let alibiList = this.state.alibiList
-        alibiList.splice(alibiIndex,1)
-        
+        const clicked = alibiList.splice(alibiIndex,1)
+
+        if (!clicked[0].alive) {
+            if (this.state.evidenceDeck.length) {
+                alibiList.push(this.state.evidenceDeck.splice(0, 1)[0])
+                this.setState({
+                    alibiList: alibiList
+                })
+                return;
+            }
+        }
         newSuspectList[location[0]][location[1]].alibied = true
         this.setState({
             suspects: newSuspectList,
@@ -291,16 +353,6 @@ export default class GameBoard extends React.Component{
             this.setState({
                 alibiList: alibiList
             })
-        }
-    }
-
-    pickImage(suspect){
-        if (!suspect.alive) {
-            return '/images/IdaKilled.jpg'
-        } else if(suspect.alibied) {
-            return '/images/IdaAlibied.jpg'
-        } else {
-            return '/images/Ida.jpg'
         }
     }
 
@@ -359,7 +411,17 @@ export default class GameBoard extends React.Component{
         //draw form the evidience deck
         if (this.state.evidenceDeck.length) {
             newKillerIdentity = this.state.evidenceDeck.splice(0, 1)
+            // if they drew a dead person, thier turn is over
+            // still need to update whos turn and persist changes to the evidence deck
+            if (!newKillerIdentity[0].alive) {
+                this.setState({
+                    evidenceDeck: this.state.evidenceDeck,
+                    whosTurn: this.DETECTIVE
+                })
+                return
+            }
         }
+
         newSuspectList[location[0]][location[1]].alibied = true
         this.setState({
             suspects: newSuspectList,
@@ -406,37 +468,59 @@ export default class GameBoard extends React.Component{
                     <title>Game Board</title>
                 </Head>
                 <Row>
-                    <Col md={2}>
-                        <ol>
-                            <li>You may shift the board in any direction 1 time.</li>
-                            <li>You may reveal that 1 of the suspects has an alibi.</li>
-                            <li>You may try to make an arrest by selecting a tile adjacent to your current location.</li>
-                        </ol>
+                    <Col md={3}>
+                        <Row>
+                            <Col md={12} className={css.evidenceHeader}>
+                                <h5 >Rules</h5>
+                                <ol>
+                                    <li>You may shift the board in any direction 1 time.</li>
+                                    <li>You may reveal that 1 of the suspects has an alibi.</li>
+                                    <li>You may try to make an arrest by selecting a tile adjacent to your current location.</li>
+                                </ol>
+                            </Col>
+                        </Row>
                         <hr />
-                        <div className={css.evidenceHeader}>
-                            <h5 >Secret Identity</h5>
-                            {secretIdentity.map((alibi, i) => {
-                                return (
-                                    <Tile key={`secId-${i}`} id={alibi.id} name={alibi.name} alive={alibi.alive} image={alibi.image}></Tile>
-                                )
-                            })}
-                        </div>
+                        <Row>
+                            <Col md={12} className={css.evidenceHeader}>
+                                <h5 >Secret Identity</h5>
+                                {secretIdentity.map((alibi, i) => {
+                                    return (
+                                        <SecretIdentity key={`secId-${i}`} id={alibi.id} name={alibi.name} alive={alibi.alive} image={alibi.image}></SecretIdentity>
+                                    )
+                                })}
+                            </Col>
+                        </Row>
                         <hr />
-                        <div className={css.evidenceHeader}>
-                            <h5 className={css.evidenceHeader}>Alibis</h5>
-                            {alibiList.map((alibi, i) => {
-                                return (
-                                    <Alibi key={`alibi-${alibi.id}`} alibiSuspect={this.alibiSuspect} alibiIndex={i} susId={alibi.id} name={alibi.name} image={alibi.image}></Alibi>
-                                )
-                            })}
-                        </div>
+                        <Row>
+                            <Col md={12} className={css.evidenceHeader}>
+                                <h5 className={css.evidenceHeader}>Alibis</h5>
+                                Remove dead alibis, and draw new card by clicking them. 
+                            </Col>
+                            <Col md={12} className={css.evidenceHeader}>
+                                {alibiList.map((alibi, i) => {
+                                    return (
+                                        <Alibi 
+                                        key={`alibi-${alibi.id}`}
+                                        alibiSuspect={this.alibiSuspect}
+                                        alibiIndex={i}
+                                        susId={alibi.id}
+                                        name={alibi.name}
+                                        image={alibi.image}
+                                        alive={alibi.alive}>
+                                        </Alibi>
+                                    )
+                                })}
+                            </Col>
+                        </Row>
                         <hr />
-                        <div className={css.evidenceHeader}>
-                            <h5>Attempt Arrest</h5>
-                            <Button variant="warning" onClick={this.arrestSuspect}>Select Suspect</Button>
-                        </div>
+                        <Row>
+                            <Col md={12} className={css.evidenceHeader}>
+                                <h5>Attempt Arrest</h5>
+                                <Button variant="warning" onClick={this.arrestSuspect}>Select Suspect</Button>
+                            </Col>
+                        </Row>
                     </Col>
-                    <Col md={8}>
+                    <Col md={6}>
                         <Row className="justify-content-md-center">
                             <div className={css.spacer}></div>
                             <MoveUpButton handleClick={this.handleClick} direction='up' index='0' />
@@ -456,7 +540,10 @@ export default class GameBoard extends React.Component{
                                                     id={suspect.id}
                                                     name={suspect.name}
                                                     alive={suspect.alive}
-                                                    image={this.pickImage(suspect)}
+                                                    image={suspect.image}
+                                                    alibiedImage={suspect.alibiedImage}
+                                                    alibied={suspect.alibied}
+                                                    isPlayer={suspect.isPlayer}
                                                 ></Tile>
                                             )
                                         })
@@ -474,15 +561,19 @@ export default class GameBoard extends React.Component{
                             <MoveDownButton handleClick={this.handleClick} direction='down' index='4' />
                         </Row>
                     </Col>
-                    <Col md={2}>
-                        <h2 className={(whosTurn === 'Detective' ? css.txtBlue : css.txtRed)}>
-                            {whosTurn}'s Turn                      
-                        </h2>
-                        <h4>People Killed: {killCount}</h4>
+                    <Col md={3}>
+                        <Row>
+                            <Col md={12} className={css.evidenceHeader}>
+                                <h2 className={(whosTurn === 'Detective' ? css.txtBlue : css.txtRed)}>
+                                    {whosTurn}'s Turn                      
+                                </h2>
+                                <h4>People Killed: {killCount}</h4>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
                 
-                <Modal show={modalState} onHide={this.handleClose} animation={false} backdrop="static" keyboard={false}>
+                <Modal show={modalState} animation={false} backdrop="static" keyboard={false}>
                     <Modal.Header dialogclassname={`justify-content: center`}>
                         <Modal.Title>
                             Welcome Detective.
