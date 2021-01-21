@@ -1,3 +1,8 @@
+/**
+ * Original game created by Maureen Birdsall and husband Mike
+ * React version of game created by Ian Greene Nov 2020 
+ */
+
 import Head from 'next/head'
 import Layout from '../../components/layout'
 import MoveUpButton from '../../components/moveUpButton'
