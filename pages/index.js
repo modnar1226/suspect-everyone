@@ -15,7 +15,7 @@ export default function Home() {
           To get started, make a decision by clicking one of the options below. 
         </p>
         <h2>
-          <Link href={'/game/detective'} >
+          <Link href={'/game/killer'} >
             <a className="btn btn-danger">Killer</a>
           </Link>
           &nbsp;
