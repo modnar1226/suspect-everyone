@@ -20,6 +20,10 @@ Then extract
 
 `cd suspect-everyone`
 
-Then start a server on port 3000.
+3. Install dependencies.
+
+`npm install`
+
+4. Then start a server on port 3000.
 
 `npm run dev`
