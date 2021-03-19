@@ -28,11 +28,11 @@ export default class GameBoard extends React.Component {
         this.handleClick = this.handleClick.bind(this)
         this.handleShow = this.handleShow.bind(this)
         this.handleClose = this.handleClose.bind(this)
-        //this.alibiSuspect = this.alibiSuspect.bind(this)
+        this.alibiSuspect = this.alibiSuspect.bind(this)
         //this.arrestSuspect = this.arrestSuspect.bind(this)
-        //this.makeArrest = this.makeArrest.bind(this)
+        this.makeArrest = this.makeArrest.bind(this)
         this.resetBoard = this.resetBoard.bind(this)
-        this.closeArrest = this.closeArrest.bind(this)
+        //this.closeArrest = this.closeArrest.bind(this)
         this.changeIdentity = this.changeIdentity.bind(this)
         this.killSuspect = this.killSuspect.bind(this)
         this.suspectList = Suspects
@@ -64,7 +64,8 @@ export default class GameBoard extends React.Component {
             lost: false,
             showArrestList: false,
             arrestList: [],
-            whosTurn: this.KILLER
+            whosTurn: this.KILLER,
+            winMessage: ''
         }
     }
 
@@ -158,9 +159,8 @@ export default class GameBoard extends React.Component {
         return susArray.map(obj => Object.assign({}, obj))
     }
 
-    /*
-    killersTurn() {
-        this.toggleTurnTxt(this.KILLER)
+    detectivesTurn() {
+        this.toggleTurnTxt(this.DETECTIVE)
         const randomTime = Math.floor(Math.random() * 1500) + 500
         const moveOptions = [
             ['up', 0], ['up', 1], ['up', 2], ['up', 3], ['up', 4],
@@ -169,32 +169,62 @@ export default class GameBoard extends React.Component {
             ['right', 0], ['right', 1], ['right', 2], ['right', 3], ['right', 4]
         ]
         setTimeout(() => {
-            const location = this.getLocation(this.state.killersIdentity[0].id)
-            const availableKills = this.getAdjacent(location)
-            const randLocation = availableKills[Math.floor(Math.random() * availableKills.length)]
+            
+            // the location of the detective, used to get the list of available arrests
+            const location = this.getLocation(this.state.detectiveIdentity[0].id)
+
+            // get list of possibilities / adjacent tiles (should include the detective)
+            const availableArrests = this.getAdjacent(location)
+            
+            // the current alibi list
+            const availableAlibis = this.state.alibiList
+
+            const alibiIndex = Math.floor(Math.random() * availableAlibis.length)
+            // the alibi being selected if chosen as a move
+            const alibiToSelect = availableAlibis[alibiIndex]
+ 
+            // pick a random location within available possibilities
+            const randLocation = availableArrests[Math.floor(Math.random() * availableArrests.length)]
+            const suspectToArrest = this.state.suspects[randLocation[0]][randLocation[1]]
+            
+            // picks a random matrix point from possible move buttons
             const moveButton = moveOptions[Math.floor(Math.random() * moveOptions.length)]
+            
+            // build a list of possible moves
             let availableMoves = [
-                () => { this.changeIdentity(this.state.killersIdentity[0].id) },
-                () => { this.moveBoard(moveButton[1], moveButton[0], this.DETECTIVE) },
+                () => { this.alibiSuspect(alibiIndex,alibiToSelect.id) },
+                () => { this.moveBoard(moveButton[1], moveButton[0], this.KILLER) },
             ]
             if (randLocation !== undefined) {
-                availableMoves.push(() => { this.killSuspect(randLocation) })
-                availableMoves.push(() => { this.killSuspect(randLocation) })
+                availableMoves.push(() => { this.makeArrest(suspectToArrest.id) })
+                availableMoves.push(() => { this.makeArrest(suspectToArrest.id) })
             }
             // execute the move
             const options = this.shuffle(availableMoves)
             options[Math.floor(Math.random() * options.length)]()
         }, randomTime)
     }
-    */
-
+    
     killSuspect(suspectId) {
+        const killersLocation = this.getLocation(this.state.killersIdentity[0].id)
+        const availableKills = this.getAdjacent(killersLocation).map(loc => {
+            return this.state.suspects[loc[0]][loc[1]]
+        })
+        availableKills;
+        console.log(availableKills)
+        if(suspectId === this.state.killersIdentity[0].id || ! suspectId in availableKills) {
+            return false
+        }
         const location = this.getLocation(suspectId)
         let newSuspectList = this.state.suspects
         newSuspectList[location[0]][location[1]].alive = false
         const killCount = this.state.killCount + 1
-        if (newSuspectList[location[0]][location[1]].id === this.state.detectiveIdentity[0].id || killCount === 6) {
+        const isDetectiveDead = newSuspectList[location[0]][location[1]].id === this.state.detectiveIdentity[0].id
+        if (isDetectiveDead || killCount === 6) {
             this.setState({
+                winMessage : isDetectiveDead
+                    ? 'You have killed the lead detecive, time to skip town!' 
+                    : 'You have killed enough people, time to skip town!',
                 killCount: killCount,
                 won: true,
             })
@@ -206,6 +236,7 @@ export default class GameBoard extends React.Component {
                 killCount: killCount,
                 whosTurn: this.DETECTIVE
             })
+            this.detectivesTurn()
         }
     }
 
@@ -265,7 +296,7 @@ export default class GameBoard extends React.Component {
 
     handleClick(index, direction) {
         this.moveBoard(index, direction, this.KILLER)
-        this.killersTurn()
+        this.detectivesTurn()
     }
 
     handleShow() {
@@ -275,11 +306,10 @@ export default class GameBoard extends React.Component {
         this.setState({ modalState: !this.state.modalState })
     }
 
-    closeArrest() {
-        this.setState({ showArrestList: !this.state.showArrestList })
-    }
+    //closeArrest() {
+    //    this.setState({ showArrestList: !this.state.showArrestList })
+    //}
 
-    /*
     alibiSuspect(alibiIndex, suspectId) {
         const location = this.getLocation(suspectId)
         let newSuspectList = this.state.suspects
@@ -290,17 +320,17 @@ export default class GameBoard extends React.Component {
         this.setState({
             suspects: newSuspectList,
         })
-        this.killersTurn()
-
+        
         //this should be done after the killers turn
         if (this.state.evidenceDeck.length) {
             alibiList.push(this.state.evidenceDeck.splice(0, 1)[0])
             this.setState({
-                alibiList: alibiList
+                alibiList: alibiList,
+                whosTurn: this.KILLER
             })
         }
-    }*/
-
+    }
+    
     /*
     arrestSuspect() {
         const location = this.getLocation(this.state.detectiveIdentity[0].id)
@@ -314,22 +344,21 @@ export default class GameBoard extends React.Component {
             arrestList: arrestList
         })
     }
+    */
     
     makeArrest(suspectId) {
         const location = this.getLocation(suspectId)
         let won = false
         if (this.state.suspects[location[0]][location[1]].id === this.state.killersIdentity[0].id) {
             won = !this.state.won
-        } else {
-            this.killersTurn()
         }
         this.setState({
-            showArrestList: !this.state.showArrestList,
+            //showArrestList: !this.state.showArrestList,
             won: won,
-            arrestList: []
+            whosTurn: this.KILLER
         })
     }
-    */
+    
 
     moveBoard(index, direction, whosTurn) {
         if (direction === 'left' || direction === 'right') {
@@ -366,6 +395,7 @@ export default class GameBoard extends React.Component {
             killersIdentity: newKillerIdentity,
             whosTurn: this.DETECTIVE
         })
+        this.detectivesTurn()
     }
 
     removeAlibiFromPlayer(suspectId) {
@@ -397,6 +427,8 @@ export default class GameBoard extends React.Component {
         const killersIdentity = this.state.killersIdentity
         const arrestList = this.state.arrestList
         const whosTurn = this.state.whosTurn
+        const winMsg = this.state.winMessage
+        const hasWon = this.state.won
 
         return (
             <Layout>
@@ -502,9 +534,11 @@ export default class GameBoard extends React.Component {
                         <Button onClick={this.handleClose}>Start</Button>
                     </Modal.Body>
                 </Modal>
+
+                {/** Losing Modal */}
                 <Modal show={this.state.lost} animation={false} backdrop="static" keyboard={false}>
                     <Modal.Header>
-                        <Modal.Title>{(killCount === 6 ? 'You\'re off the case' : 'RIP')}</Modal.Title>
+                        <Modal.Title>You've been caught by the detective.</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <p>
@@ -519,27 +553,15 @@ export default class GameBoard extends React.Component {
                         <Button variant='success' onClick={this.resetBoard}>Try Again?</Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={this.state.showArrestList} animation={false} keyboard={false} onHide={this.closeArrest}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Pick a person to arrest</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className={css.evidenceHeader}>
-                            {arrestList.map((alibi, i) => {
-                                return (
-                                    <Suspect key={`suspect-${i}`} id={alibi.id} makeArrest={this.makeArrest} selectIndex={i} name={alibi.name} image={alibi.image}></Suspect>
-                                )
-                            })}
-                        </div>
-                    </Modal.Body>
-                </Modal>
-                <Modal show={this.state.won} animation={false} backdrop="static" keyboard={false}>
+                
+                {/** winning modal  */}
+                <Modal show={hasWon} animation={false} backdrop="static" keyboard={false}>
                     <Modal.Header dialogclassname={`justify-content: center`}>
                         <Modal.Title>Congratulations</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className={css.evidenceHeader}>
-                            You have killed the lead detecive, time to skip town!
+                            {winMsg}
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
