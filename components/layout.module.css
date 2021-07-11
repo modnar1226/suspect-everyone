@@ -1,19 +1,42 @@
-.header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .headerImage {
   width: 6rem;
   height: 6rem;
 }
 
 .headerHomeImage {
-  width: 8rem;
-  height: 8rem;
+  width: 100%;
+}
+
+.asideMenu {
+  
 }
 
 .backToHome {
   margin: 3rem 0 0;
 }
+
+
+@media only screen and (min-width: 700px) {
+  .headerHomeImage {
+    width: 75%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
+
+    .asideMenu {
+    width: 50%;
+    margin: auto;
+    position: absolute;
+    top: 60%; left: 15%; bottom: 0; right: 0;
+  }
+} 
+
+@media only screen and (min-width: 900px) {
+  .headerHomeImage {
+    width: 50%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
+} 
