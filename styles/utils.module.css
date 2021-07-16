@@ -50,5 +50,8 @@
 
 .bg_darkGrey{
   background-color: #2b2d36;
-  color:white;
+}
+
+.width_50 {
+  width: 50%;
 }

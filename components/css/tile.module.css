@@ -9,13 +9,14 @@
 div.tileBody{
     display:inline-block;
     width:15vh;
-    background-color:white;
-    box-shadow: 2px 2px 2px 2px lightgrey;
+    /*background-color:#4F4F4F;*/
+    /*box-shadow: 2px 2px 2px 2px lightgrey;*/
     text-align:center;
     margin: 1vh;
     font-family: cursive;
     position: relative;
-
+    /*border: 5px solid #E65338;*/
+    border-radius: 5%;
 
 }
 
@@ -27,6 +28,8 @@ div.arrestAttempt{
 .tileImg{
     width: 80%;
     margin: 0 auto;
+    border-radius: 5%;
+
 }
 
 .colBtn{
@@ -48,7 +51,7 @@ div.arrestAttempt{
 }
 
 .rowLeftBtn > svg, .rowRightBtn > svg, .colBtn {
-    color:black;
+    color:#E65338;
 }
 
 .rowLeftBtn > svg:hover, .colBtn > svg:hover, .rowRightBtn > svg:hover{

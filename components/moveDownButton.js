@@ -1,5 +1,5 @@
 import React from 'react'
-import css from './tile.module.css'
+import css from './css/tile.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default class MoveDownButton extends React.Component{

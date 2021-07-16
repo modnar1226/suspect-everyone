@@ -11,7 +11,7 @@ import MoveLeftButton from '../../components/moveLeftButton'
 import MoveRightButton from '../../components/moveRightButton'
 import Tile from '../../components/tile'
 import Evidence from '../../components/evidence'
-import css from '../../components/tile.module.css'
+import css from '../../components/css/tile.module.css'
 import React from 'react'
 import Suspects from '../../mappings/suspectList'
 import Row from 'react-bootstrap/Row'
@@ -21,6 +21,7 @@ import Modal from 'react-bootstrap/Modal'
 import Alibi from '../../components/alibi'
 import Suspect from '../../components/suspect'
 import SecretIdentity from '../../components/secretIdentity'
+import utilStyles from '../../styles/utils.module.css'
 
 export default class GameBoard extends React.Component{
     constructor(props){
@@ -467,7 +468,7 @@ export default class GameBoard extends React.Component{
                 <Head>
                     <title>Game Board</title>
                 </Head>
-                <Row>
+                <Row className={`text-white`}>
                     <Col md={3}>
                         <Row>
                             <Col md={12} className={css.evidenceHeader}>
@@ -574,12 +575,12 @@ export default class GameBoard extends React.Component{
                 </Row>
                 
                 <Modal show={modalState} animation={false} backdrop="static" keyboard={false}>
-                    <Modal.Header dialogclassname={`justify-content: center`}>
+                    <Modal.Header className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Modal.Title>
                             Welcome Detective.
                         </Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body className={`${utilStyles.bg_darkGrey} text-white`}>
                         <p className={css.evidenceHeader}>
                             There is a killer on the loose and you have to catch them before they kill 6 people.
                         </p>
