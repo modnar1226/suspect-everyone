@@ -1,5 +1,5 @@
 import React from 'react'
-import css from './tile.module.css'
+import css from './css/tile.module.css'
 
 export default class Tile extends React.Component{
     constructor (props) {

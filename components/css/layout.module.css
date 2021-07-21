@@ -1,0 +1,105 @@
+.headerImage {
+  width: 6rem;
+  height: 6rem;
+}
+
+.headerHomeImage {
+  width: 100%;
+}
+
+.asideMenu {
+  
+}
+
+.splashNote {
+
+}
+
+.backToHome {
+  margin: 3rem 0 0;
+}
+
+#mode1::before {
+  background-image:url('/images/Marker1.png');
+  background-size:2rem, 2rem;
+  display: inline-block;
+  width: 2rem; 
+  height: 2rem;
+  content:"";
+  line-height: 1;
+}
+
+#mode2::before {
+  background-image:url('/images/Marker2.png');
+  background-size:2rem, 2rem;
+  display: inline-block;
+  width: 2rem; 
+  height: 2rem;
+  content:"";
+}
+
+.invert {
+  color:#2b2d36;
+  background-color:white;
+  border: 1em solid white;
+  height: 50%;
+  width: 50%;
+}
+
+a:hover.invert{
+  color:#2b2d36;
+  background-color:white;
+  text-decoration: none;
+}
+
+
+
+#rules::before{
+  background-image:url('/images/Brush.png');
+  background-size:2rem, 2rem;
+  display: inline-block;
+  width: 2rem; 
+  height: 2rem;
+  content:"";
+}
+
+.modeLink{
+  text-decoration: none;
+
+}
+
+a:hover.modeLink{
+  text-decoration: none;
+}
+
+
+@media only screen and (min-width: 700px) {
+  .headerHomeImage {
+    width: 75%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
+
+.splashNote {
+    width: 50%;
+    margin: auto;
+    position: absolute;
+    top: 60%; left: 12%; bottom: 0; right: 0;
+}
+  .asideMenu {
+    width: 50%;
+    margin: auto;
+    position: absolute;
+    top: 65%; left: 40%; bottom: 0; right: 0;
+  }
+} 
+
+@media only screen and (min-width: 900px) {
+  .headerHomeImage {
+    width: 50%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
+} 
