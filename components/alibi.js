@@ -19,7 +19,7 @@ export default class Alibi extends React.Component{
             killed = <img key={`oId-${id}`} className={css.overlay} src={`/images/deadOverlay.png`} alt={name} />
         }
         return (
-            <div key={`e-${id}`} id={name} className={css.alibiBody} onClick={() => this.props.alibiSuspect(alibiIndex,susId)}>
+            <div key={`e-${id}`} id={name} className={css.tileBody} onClick={() => this.props.alibiSuspect(alibiIndex,susId)}>
                 <img key={`i-${id}`}className={css.tileImg} src={image} alt='image'/>
                 {killed}
                 {name}

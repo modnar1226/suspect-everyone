@@ -10,7 +10,6 @@ import MoveDownButton from '../../components/moveDownButton'
 import MoveLeftButton from '../../components/moveLeftButton'
 import MoveRightButton from '../../components/moveRightButton'
 import Tile from '../../components/tile'
-import Evidence from '../../components/evidence'
 import css from '../../components/css/tile.module.css'
 import React from 'react'
 import Suspects from '../../mappings/suspectList'
@@ -22,6 +21,9 @@ import Alibi from '../../components/alibi'
 import Suspect from '../../components/suspect'
 import SecretIdentity from '../../components/secretIdentity'
 import utilStyles from '../../styles/utils.module.css'
+import StartModal from '../../components/startModal'
+import GameOverModal from '../../components/gameOverModal'
+import ArrestListModal from '../../components/arrestListModal'
 
 export default class GameBoard extends React.Component{
     constructor(props){
@@ -573,8 +575,20 @@ export default class GameBoard extends React.Component{
                         </Row>
                     </Col>
                 </Row>
-                
-                <Modal show={modalState} animation={false} backdrop="static" keyboard={false}>
+
+                <StartModal 
+                    modalState={modalState}
+                    title="Welcome Detective."
+                    playerSelect={playerSelect}
+                    setIdentity={this.setIdentity}
+                />
+
+                <GameOverModal 
+                    modalState={''}
+                    title=""
+                    
+                />                   
+                {/*<Modal show={modalState} animation={false} backdrop="static" keyboard={false}>
                     <Modal.Header className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Modal.Title>
                             Welcome Detective.
@@ -596,12 +610,12 @@ export default class GameBoard extends React.Component{
                             })}
                         </div>
                     </Modal.Body>
-                </Modal>
+                        </Modal>*/}
                 <Modal show={this.state.lost} animation={false} backdrop="static" keyboard={false}>
-                    <Modal.Header>
+                    <Modal.Header className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Modal.Title>{(killCount === 6 ? 'You\'re off the case' : 'RIP')}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body className={`${utilStyles.bg_darkGrey} text-white`}>
                         <p>
                             {(
                                 killCount === 6 
@@ -610,15 +624,15 @@ export default class GameBoard extends React.Component{
                             }
                         </p>
                     </Modal.Body>
-                    <Modal.Footer>
+                    <Modal.Footer className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Button variant='success' onClick={this.resetBoard}>Try Again?</Button>
                     </Modal.Footer>
                 </Modal>
                 <Modal show={this.state.showArrestList} animation={false} keyboard={false} onHide={this.closeArrest}>
-                    <Modal.Header closeButton>
+                    <Modal.Header closeButton className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Modal.Title>Pick a person to arrest</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body className={`${utilStyles.bg_darkGrey} text-white`}>
                         <div className={css.evidenceHeader}>
                             {arrestList.map((alibi, i) => {
                                 return (
@@ -629,10 +643,10 @@ export default class GameBoard extends React.Component{
                     </Modal.Body>
                 </Modal>
                 <Modal show={this.state.won} animation={false} backdrop="static" keyboard={false}>
-                    <Modal.Header dialogclassname={`justify-content: center`}>
+                    <Modal.Header dialogclassname={`${utilStyles.bg_darkGrey} text-white justify-content: center`}>
                         <Modal.Title>Congratulations</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body className={`${utilStyles.bg_darkGrey} text-white`}>
                         <div className={css.evidenceHeader}>
                             You have found the killer!
                         </div>
