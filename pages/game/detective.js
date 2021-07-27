@@ -584,9 +584,13 @@ export default class GameBoard extends React.Component{
                 />
 
                 <GameOverModal 
-                    modalState={''}
-                    title=""
-                    
+                    modalState={this.state.lost}
+                    title={(killCount === 6 ? 'You\'re off the case' : 'RIP')}
+                    resetBoard={this.resetBoard}
+                    body={(killCount === 6
+                        ? `You let the killer get away with too many murders!`
+                        : `You were killed by ${killersIdentity[0].name}`)}
+
                 />                   
                 {/*<Modal show={modalState} animation={false} backdrop="static" keyboard={false}>
                     <Modal.Header className={`${utilStyles.bg_darkGrey} text-white`}>
@@ -610,7 +614,7 @@ export default class GameBoard extends React.Component{
                             })}
                         </div>
                     </Modal.Body>
-                        </Modal>*/}
+                        </Modal>
                 <Modal show={this.state.lost} animation={false} backdrop="static" keyboard={false}>
                     <Modal.Header className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Modal.Title>{(killCount === 6 ? 'You\'re off the case' : 'RIP')}</Modal.Title>
@@ -628,6 +632,7 @@ export default class GameBoard extends React.Component{
                         <Button variant='success' onClick={this.resetBoard}>Try Again?</Button>
                     </Modal.Footer>
                 </Modal>
+                    */}
                 <Modal show={this.state.showArrestList} animation={false} keyboard={false} onHide={this.closeArrest}>
                     <Modal.Header closeButton className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Modal.Title>Pick a person to arrest</Modal.Title>
