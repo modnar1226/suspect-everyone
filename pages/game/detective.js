@@ -28,6 +28,8 @@ import ArrestListModal from '../../components/arrestListModal'
 export default class GameBoard extends React.Component{
     constructor(props){
         super(props)
+        console.log('=== CONSTRUCTOR called ===')
+        
         // This binding is necessary to make `this` work in the callback
         this.handleClick = this.handleClick.bind(this)
         this.handleShow = this.handleShow.bind(this)
@@ -41,17 +43,81 @@ export default class GameBoard extends React.Component{
         
         this.KILLER = 'Killer'
         this.DETECTIVE = 'Detective'
-        const suspects = this.shuffle(this.cloneSuspectArray(this.suspectList))
-        const evidenceDeck = this.shuffle(this.cloneSuspectArray(this.suspectList))
-        //const discardPile = []
-        this.state = this.newBoard()
+        
+        // Initialize with static data first to prevent hydration mismatch
+        this.state = this.getInitialState()
         this.setIdentity = this.setIdentity.bind(this)
+        
+        console.log('=== CONSTRUCTOR completed ===')
+    }
+
+    componentDidMount() {
+        // Initialize game data after mounting to prevent hydration issues
+        console.log('=== componentDidMount called ===')
+        console.log('suspectList:', this.suspectList?.length)
+        
+        // Only initialize if not already done
+        if (!this.state.gameInitialized) {
+            const newGameData = this.newBoard()
+            console.log('newBoard returned:', {
+                killersIdentity: newGameData.killersIdentity?.length,
+                playerSelect: newGameData.playerSelect?.length,
+                modalState: newGameData.modalState
+            })
+            
+            this.setState({
+                ...newGameData,
+                gameInitialized: true
+            }, () => {
+                console.log('setState completed, current state:', {
+                    killersIdentity: this.state.killersIdentity?.length,
+                    playerSelect: this.state.playerSelect?.length,
+                    modalState: this.state.modalState
+                })
+            })
+        }
+    }
+
+    getInitialState() {
+        // Always return static data to ensure server/client render match
+        console.log('=== getInitialState called ===')
+        
+        const staticSuspects = this.cloneSuspectArray(this.suspectList)
+        return {
+            suspects: this.populateBoardArray(staticSuspects),
+            evidenceDeck: [],
+            killCount: 0,
+            modalState: false,
+            secretIdentity: [],
+            alibiList: [],
+            killersIdentity: [],
+            playerSelect: [],
+            won: false,
+            lost: false,
+            showArrestList: false,
+            arrestList: [],
+            whosTurn: this.DETECTIVE,
+            gameInitialized: false
+        }
     }
 
     newBoard(){
+        console.log('=== newBoard called ===')
+        console.log('this.suspectList exists:', !!this.suspectList)
+        console.log('this.suspectList length:', this.suspectList?.length)
+        
         const suspects = this.shuffle(this.cloneSuspectArray(this.suspectList))
         const evidenceDeck = this.shuffle(this.cloneSuspectArray(this.suspectList))
-        //const discardPile = []
+        
+        console.log('evidenceDeck after shuffle:', evidenceDeck?.length)
+        console.log('evidenceDeck first few:', evidenceDeck?.slice(0, 3)?.map(s => s?.name))
+        
+        const killersIdentity = evidenceDeck.splice(0, 1)
+        const playerSelect = evidenceDeck.splice(0, 4)
+        
+        console.log('after splice - killersIdentity:', killersIdentity?.map(k => k?.name))
+        console.log('after splice - playerSelect:', playerSelect?.map(p => p?.name))
+        
         return {
             suspects: this.populateBoardArray(suspects),
             evidenceDeck: evidenceDeck,
@@ -59,8 +125,8 @@ export default class GameBoard extends React.Component{
             modalState: true,
             secretIdentity: [],
             alibiList: [],
-            killersIdentity: evidenceDeck.splice(0, 1),
-            playerSelect: evidenceDeck.splice(0, 4),
+            killersIdentity: killersIdentity,
+            playerSelect: playerSelect,
             won: false,
             lost: false,
             showArrestList: false,
@@ -75,9 +141,6 @@ export default class GameBoard extends React.Component{
         )
     }
 
-    componentDidMount() {
-        
-    }
     componentWillUnmount() {
 
     }
@@ -92,6 +155,9 @@ export default class GameBoard extends React.Component{
             ['right', 0], ['right', 1], ['right', 2], ['right', 3], ['right', 4]
         ]
         setTimeout(() => {
+            if (!this.state.killersIdentity || !this.state.killersIdentity[0]) {
+                return
+            }
             const killersLocation = this.getLocation(this.state.killersIdentity[0].id)
             const availableKills = this.getAdjacent(killersLocation)
             const location = availableKills[Math.floor(Math.random() * availableKills.length)]
@@ -121,7 +187,7 @@ export default class GameBoard extends React.Component{
         newSuspectList[location[0]][location[1]].alive = false
         const suspectId = newSuspectList[location[0]][location[1]].id
         const killCount = this.state.killCount + 1
-        if (suspectId === this.state.secretIdentity[0].id || killCount === 6) {
+        if ((this.state.secretIdentity && this.state.secretIdentity[0] && suspectId === this.state.secretIdentity[0].id) || killCount === 6) {
             this.setState({
                 killCount: killCount,
                 lost:true,
@@ -228,7 +294,12 @@ export default class GameBoard extends React.Component{
     }
 
     shuffle(array) {
-        return array.sort(() => Math.random() - 0.5) 
+        // Proper Fisher-Yates shuffle
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     }
     populateBoardArray(susArray){
         var result = susArray.reduce((resultArray, item, index) => {
@@ -306,6 +377,7 @@ export default class GameBoard extends React.Component{
             playerSelect: []
         }, () => { // this runs after setState
             // killer goes first and must make a kill
+            if (!this.state.killersIdentity || !this.state.killersIdentity[0]) return
             const killersLocation = this.getLocation(this.state.killersIdentity[0].id)
             const availableKills = this.getAdjacent(killersLocation)
             const location = availableKills[Math.floor(Math.random() * availableKills.length)]
@@ -360,6 +432,7 @@ export default class GameBoard extends React.Component{
     }
 
     arrestSuspect(){
+        if (!this.state.secretIdentity || !this.state.secretIdentity[0]) return
         const location = this.getLocation(this.state.secretIdentity[0].id)
         const availableArrests = this.getAdjacent(location, true)
         let arrestList = []
@@ -375,7 +448,7 @@ export default class GameBoard extends React.Component{
     makeArrest(suspectId){
         const location = this.getLocation(suspectId)
         let won = false
-        if (this.state.suspects[location[0]][location[1]].id === this.state.killersIdentity[0].id) {
+        if (this.state.killersIdentity && this.state.killersIdentity[0] && suspectId === this.state.killersIdentity[0].id) {
             won = !this.state.won    
         } else{
             this.killersTurn()
@@ -465,6 +538,13 @@ export default class GameBoard extends React.Component{
         const arrestList = this.state.arrestList
         const whosTurn = this.state.whosTurn
 
+        console.log('=== RENDER ===', {
+            modalState,
+            playerSelectLength: playerSelect?.length,
+            secretIdentityLength: secretIdentity?.length,
+            modalCondition: modalState && playerSelect && playerSelect.length > 0 && secretIdentity && secretIdentity.length === 0
+        })
+
         return (
             <Layout>
                 <Head>
@@ -485,12 +565,14 @@ export default class GameBoard extends React.Component{
                         <hr />
                         <Row>
                             <Col md={12} className={css.evidenceHeader}>
-                                <h5 >Secret Identity</h5>
-                                {secretIdentity.map((alibi, i) => {
-                                    return (
-                                        <SecretIdentity key={`secId-${i}`} id={alibi.id} name={alibi.name} alive={alibi.alive} image={alibi.image}></SecretIdentity>
-                                    )
-                                })}
+                                <h5>Secret Identity</h5>
+                                <div className={css.modalEvidenceContainer}>
+                                    {secretIdentity.map((alibi, i) => {
+                                        return (
+                                            <SecretIdentity key={`secId-${i}`} id={alibi.id} name={alibi.name} alive={alibi.alive} image={alibi.image}></SecretIdentity>
+                                        )
+                                    })}
+                                </div>
                             </Col>
                         </Row>
                         <hr />
@@ -499,20 +581,22 @@ export default class GameBoard extends React.Component{
                                 <h5 className={css.evidenceHeader}>Alibis</h5>
                                 Remove dead alibis, and draw new card by clicking them. 
                             </Col>
-                            <Col md={12} className={css.evidenceHeader}>
-                                {alibiList.map((alibi, i) => {
-                                    return (
-                                        <Alibi 
-                                        key={`alibi-${alibi.id}`}
-                                        alibiSuspect={this.alibiSuspect}
-                                        alibiIndex={i}
-                                        susId={alibi.id}
-                                        name={alibi.name}
-                                        image={alibi.image}
-                                        alive={alibi.alive}>
-                                        </Alibi>
-                                    )
-                                })}
+                            <Col md={12}>
+                                <div className={css.modalEvidenceContainer}>
+                                    {alibiList.map((alibi, i) => {
+                                        return (
+                                            <Alibi 
+                                            key={`alibi-${alibi.id}`}
+                                            alibiSuspect={this.alibiSuspect}
+                                            alibiIndex={i}
+                                            susId={alibi.id}
+                                            name={alibi.name}
+                                            image={alibi.image}
+                                            alive={alibi.alive}>
+                                            </Alibi>
+                                        )
+                                    })}
+                                </div>
                             </Col>
                         </Row>
                         <hr />
@@ -524,45 +608,54 @@ export default class GameBoard extends React.Component{
                         </Row>
                     </Col>
                     <Col md={6}>
-                        <Row className="justify-content-md-center">
-                            <div className={css.spacer}></div>
+                        <div className={css.gameBoard}>
+                            {/* Empty corner */}
+                            <div className={css.emptyCornerTL}></div>
+                            
+                            {/* Top move buttons */}
                             <MoveUpButton handleClick={this.handleClick} direction='up' index='0' />
                             <MoveUpButton handleClick={this.handleClick} direction='up' index='1' />
                             <MoveUpButton handleClick={this.handleClick} direction='up' index='2' />
                             <MoveUpButton handleClick={this.handleClick} direction='up' index='3' />
                             <MoveUpButton handleClick={this.handleClick} direction='up' index='4' />
-                        </Row>
-                        {suspects.map((row, rowIndex) => {
-                            return (
-                                <Row key={`boardRow-${rowIndex}`} className="justify-content-md-center">
-                                    <MoveLeftButton key={`0-${rowIndex}`} handleClick={this.handleClick} direction='left' index={rowIndex} />
-                                    {row.map((suspect) => {
-                                        return (
-                                                <Tile
-                                                    key={suspect.id}
-                                                    id={suspect.id}
-                                                    name={suspect.name}
-                                                    alive={suspect.alive}
-                                                    image={suspect.image}
-                                                    alibiedImage={suspect.alibiedImage}
-                                                    alibied={suspect.alibied}
-                                                    isPlayer={suspect.isPlayer}
-                                                ></Tile>
-                                            )
-                                        })
-                                    }
-                                        <MoveRightButton key={`1-${rowIndex}`} handleClick={this.handleClick} direction='right' index={rowIndex} />
-                                </Row>
-                            )
-                        })}
-                        <Row className="justify-content-md-center">
-                            <div className={css.spacer}></div>
+                            
+                            {/* Empty corner */}
+                            <div className={css.emptyCornerTR}></div>
+
+                            {/* Game rows with left buttons, tiles, and right buttons */}
+                            {suspects.map((row, rowIndex) => (
+                                <React.Fragment key={`boardRow-${rowIndex}`}>
+                                    <MoveLeftButton handleClick={this.handleClick} direction='left' index={rowIndex} />
+                                    {row.map((suspect, colIndex) => (
+                                        <div key={suspect.id} className={`${css.gameTile} ${css[`gameTileRow${rowIndex}`]} ${css[`gameTileCol${colIndex}`]}`}>
+                                            <Tile
+                                                id={suspect.id}
+                                                name={suspect.name}
+                                                alive={suspect.alive}
+                                                image={suspect.image}
+                                                alibiedImage={suspect.alibiedImage}
+                                                alibied={suspect.alibied}
+                                                isPlayer={suspect.isPlayer}
+                                            />
+                                        </div>
+                                    ))}
+                                    <MoveRightButton handleClick={this.handleClick} direction='right' index={rowIndex} />
+                                </React.Fragment>
+                            ))}
+
+                            {/* Empty corner */}
+                            <div className={css.emptyCornerBL}></div>
+                            
+                            {/* Bottom move buttons */}
                             <MoveDownButton handleClick={this.handleClick} direction='down' index='0' />
                             <MoveDownButton handleClick={this.handleClick} direction='down' index='1' />
                             <MoveDownButton handleClick={this.handleClick} direction='down' index='2' />
                             <MoveDownButton handleClick={this.handleClick} direction='down' index='3' />
                             <MoveDownButton handleClick={this.handleClick} direction='down' index='4' />
-                        </Row>
+                            
+                            {/* Empty corner */}
+                            <div className={css.emptyCornerBR}></div>
+                        </div>
                     </Col>
                     <Col md={3}>
                         <Row>
@@ -577,40 +670,19 @@ export default class GameBoard extends React.Component{
                 </Row>
 
                 <StartModal 
-                    modalState={modalState}
+                    modalState={modalState && playerSelect && playerSelect.length > 0 && secretIdentity && secretIdentity.length === 0}
                     title="Welcome Detective."
                     playerSelect={playerSelect}
                     setIdentity={this.setIdentity}
                 />
 
                 <GameOverModal 
-                    modalState={''}
+                    modalState={false}
                     title=""
-                    
+                    playerSelect={playerSelect}
+                    setIdentity={this.setIdentity}
                 />                   
-                {/*<Modal show={modalState} animation={false} backdrop="static" keyboard={false}>
-                    <Modal.Header className={`${utilStyles.bg_darkGrey} text-white`}>
-                        <Modal.Title>
-                            Welcome Detective.
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className={`${utilStyles.bg_darkGrey} text-white`}>
-                        <p className={css.evidenceHeader}>
-                            There is a killer on the loose and you have to catch them before they kill 6 people.
-                        </p>
-                        <p className={css.evidenceHeader}>
-                            Pick a secret identity to begin!
-                        </p>
-                        <hr/>
-                        <div className={css.evidenceHeader}>
-                            {playerSelect.map((alibi, i) => {
-                                return (
-                                    <Evidence key={`player-${i}`} setIdentity={this.setIdentity} selectIndex={i} name={alibi.name} image={alibi.image}></Evidence>
-                                )
-                            })}
-                        </div>
-                    </Modal.Body>
-                        </Modal>*/}
+
                 <Modal show={this.state.lost} animation={false} backdrop="static" keyboard={false}>
                     <Modal.Header className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Modal.Title>{(killCount === 6 ? 'You\'re off the case' : 'RIP')}</Modal.Title>
@@ -620,7 +692,7 @@ export default class GameBoard extends React.Component{
                             {(
                                 killCount === 6 
                                 ? `You let the killer get away with too many murders!`
-                                : `You were killed by ${killersIdentity[0].name}`)
+                                : `You were killed by ${killersIdentity && killersIdentity[0] ? killersIdentity[0].name : 'the killer'}`)
                             }
                         </p>
                     </Modal.Body>
@@ -643,7 +715,7 @@ export default class GameBoard extends React.Component{
                     </Modal.Body>
                 </Modal>
                 <Modal show={this.state.won} animation={false} backdrop="static" keyboard={false}>
-                    <Modal.Header dialogclassname={`${utilStyles.bg_darkGrey} text-white justify-content: center`}>
+                    <Modal.Header className={`${utilStyles.bg_darkGrey} text-white justify-content: center`}>
                         <Modal.Title>Congratulations</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className={`${utilStyles.bg_darkGrey} text-white`}>
@@ -651,7 +723,7 @@ export default class GameBoard extends React.Component{
                             You have found the killer!
                         </div>
                     </Modal.Body>
-                    <Modal.Footer>
+                    <Modal.Footer className={`${utilStyles.bg_darkGrey} text-white`}>
                         <Button variant='success' onClick={this.resetBoard}>Play Again?</Button>
                     </Modal.Footer>
                 </Modal>

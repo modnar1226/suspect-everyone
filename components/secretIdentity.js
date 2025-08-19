@@ -16,8 +16,8 @@ export default class SecretIdentity extends React.Component{
             killed = <img key={`oId-${id}`} className={css.overlay} src={`/images/deadOverlay.png`} alt={name} />
         }
         return (
-        <div key={`tileId-${id}`} id={name} className={css.tileBody}>
-            <img key={`imgId-${id}`} className={css.tileImg} src={image} alt={name}/>
+        <div key={`tileId-${id}`} id={name} className={css.evidenceBody}>
+            <img key={`imgId-${id}`} className={css.evidenceImg} src={image} alt={name}/>
             {killed}
             {name}
         </div>

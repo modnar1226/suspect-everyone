@@ -11,7 +11,7 @@ export const siteTitle = 'Suspect Everyone'
 
 export default function Layout({ children, home }) {
     return (
-        <html>
+        <>
             <Head>
                 <link rel="icon" href="/favicon.png" />
                 <meta
@@ -19,7 +19,7 @@ export default function Layout({ children, home }) {
                     content="Solve a mystery or go on a killing spree."
                 />
             </Head>
-            <body className={`${utilStyles.bg_darkGrey}`}>
+            <div className={`${utilStyles.bg_darkGrey}`}>
                 <Container fluid>
                         {home ? (
                             <>
@@ -74,7 +74,7 @@ export default function Layout({ children, home }) {
                         {children}
                     </div>
                 </Container>
-            </body>
-        </html>
+            </div>
+        </>
     )
 }

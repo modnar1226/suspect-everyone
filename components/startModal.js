@@ -33,8 +33,8 @@ export default class startModal extends React.Component {
                         Pick a secret identity to begin!
                         </p>
                     <hr />
-                    <div className={css.evidenceHeader}>
-                        {playerSelect.map((alibi, i) => {
+                    <div className={css.modalEvidenceContainer}>
+                        {playerSelect && playerSelect.map((alibi, i) => {
                             return (
                                 <Evidence key={`player-${i}`} setIdentity={setIdentity} selectIndex={i} name={alibi.name} image={alibi.image}></Evidence>
                             )

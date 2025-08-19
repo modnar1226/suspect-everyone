@@ -1,23 +1,216 @@
 .mZeroAuto{
     margin:0 auto;
 }
+
+/* New CSS Grid-based game board */
+.gameBoard {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(10vh, 1fr));
+    grid-template-rows: repeat(7, minmax(10vh, 1fr));
+    gap: 8px;
+    width: 80vh;
+    height: 80vh;
+    margin: 0 auto;
+    padding: 16px;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.gameBoardCell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Empty corners at specific positions */
+.emptyCorner {
+    /* Empty corners positioned at grid corners */
+}
+
+.emptyCornerTL {
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.emptyCornerTR {
+    grid-row: 1;
+    grid-column: 7;
+}
+
+.emptyCornerBL {
+    grid-row: 7;
+    grid-column: 1;
+}
+
+.emptyCornerBR {
+    grid-row: 7;
+    grid-column: 7;
+}
+
+/* Move buttons in grid positions */
+.moveButtonUp {
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific column positioning for top buttons */
+.moveButtonUp0 { grid-column: 2; }
+.moveButtonUp1 { grid-column: 3; }
+.moveButtonUp2 { grid-column: 4; }
+.moveButtonUp3 { grid-column: 5; }
+.moveButtonUp4 { grid-column: 6; }
+
+.moveButtonUp:hover {
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.moveButtonDown {
+    grid-row: 7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific column positioning for bottom buttons */
+.moveButtonDown0 { grid-column: 2; }
+.moveButtonDown1 { grid-column: 3; }
+.moveButtonDown2 { grid-column: 4; }
+.moveButtonDown3 { grid-column: 5; }
+.moveButtonDown4 { grid-column: 6; }
+
+.moveButtonDown:hover {
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.moveButtonLeft {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific row positioning for left buttons */
+.moveButtonLeft0 { grid-row: 2; }
+.moveButtonLeft1 { grid-row: 3; }
+.moveButtonLeft2 { grid-row: 4; }
+.moveButtonLeft3 { grid-row: 5; }
+.moveButtonLeft4 { grid-row: 6; }
+
+.moveButtonLeft:hover {
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.moveButtonRight {
+    grid-column: 7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific row positioning for right buttons */
+.moveButtonRight0 { grid-row: 2; }
+.moveButtonRight1 { grid-row: 3; }
+.moveButtonRight2 { grid-row: 4; }
+.moveButtonRight3 { grid-row: 5; }
+.moveButtonRight4 { grid-row: 6; }
+
+.moveButtonRight:hover {
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Tile positions in center 5x5 grid */
+.gameTile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Game tile row positioning */
+.gameTileRow0 { grid-row: 2; }
+.gameTileRow1 { grid-row: 3; }
+.gameTileRow2 { grid-row: 4; }
+.gameTileRow3 { grid-row: 5; }
+.gameTileRow4 { grid-row: 6; }
+
+/* Game tile column positioning */
+.gameTileCol0 { grid-column: 2; }
+.gameTileCol1 { grid-column: 3; }
+.gameTileCol2 { grid-column: 4; }
+.gameTileCol3 { grid-column: 5; }
+.gameTileCol4 { grid-column: 6; }
+
 .grid{
     display:inline-block;
     width: 60%;
 }
 
 div.tileBody{
-    display:inline-block;
-    width:15vh;
-    /*background-color:#4F4F4F;*/
-    /*box-shadow: 2px 2px 2px 2px lightgrey;*/
-    text-align:center;
-    margin: 1vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
     font-family: cursive;
     position: relative;
-    /*border: 5px solid #E65338;*/
-    border-radius: 5%;
+    border-radius: 12px;
+    background-color: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
+div.tileBody:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 div.arrestAttempt{
@@ -26,49 +219,147 @@ div.arrestAttempt{
 
 
 .tileImg{
-    width: 80%;
+    width: 60%;
+    height: 60%;
     margin: 0 auto;
-    border-radius: 5%;
-
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.2);
 }
 
 .colBtn{
-    padding:0 6vh;
-    width:17vh;
+    padding: 1vh;
+    width: 17vh;
+    height: 7vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0 1vh;
 }
 
 
-.tileBody:nth-child(2), .colBtn:nth-child(2){
+.tileBody:nth-child(2){
+    margin-left:0;
+}
+
+.colBtn:nth-child(2){
     margin-left:0;
 }
 
 .rowLeftBtn{
     margin: auto 1vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    min-width: 7vh;
+    min-height: 7vh;
+    padding: 1vh;
 }
 
 .rowRightBtn{
-    margin: auto 0;
+    margin: auto 1vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    min-width: 7vh;
+    min-height: 7vh;
+    padding: 1vh;
 }
 
-.rowLeftBtn > svg, .rowRightBtn > svg, .colBtn {
-    color:#E65338;
+/* CSS Arrow styling for all move buttons */
+.moveButtonUp::after,
+.moveButtonDown::after,
+.moveButtonLeft::after,
+.moveButtonRight::after {
+    content: '';
+    width: 0;
+    height: 0;
+    transition: all 0.2s;
 }
 
-.rowLeftBtn > svg:hover, .colBtn > svg:hover, .rowRightBtn > svg:hover{
-    color:grey;
+.moveButtonUp::after {
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 16px solid #E65338;
+}
+
+.moveButtonDown::after {
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 16px solid #E65338;
+}
+
+.moveButtonLeft::after {
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-right: 16px solid #E65338;
+}
+
+.moveButtonRight::after {
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 16px solid #E65338;
+}
+
+.moveButtonUp:hover::after {
+    border-bottom-color: grey;
+}
+
+.moveButtonDown:hover::after {
+    border-top-color: grey;
+}
+
+.moveButtonLeft:hover::after {
+    border-right-color: grey;
+}
+
+.moveButtonRight:hover::after {
+    border-left-color: grey;
 }
 
 div.evidenceBody{
-    display:inline-block;
-    width:15vh;
-    background-color:white;
-    box-shadow: 2px 2px 2px 2px lightgrey;
-    text-align:center;
-    margin-left:1vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 8vh;
+    height: 10vh;
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    text-align: center;
+    margin: 0.5vh;
+    font-family: cursive;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+div.evidenceBody:hover {
+    transform: scale(1.05);
+    background-color: rgba(255,255,255,0.2);
+}
+
+.evidenceImg {
+    width: 6vh;
+    height: 6vh;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5vh;
 }
 
 .evidenceHeader{
     text-align:center;
+}
+
+.modalEvidenceContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1vh;
+    text-align: center;
 }
 
 div.alibiBody{
@@ -102,7 +393,7 @@ div.alibiBody{
 }
 .spacer{
     display:inline-block;
-    width:4vh;
+    width:9vh;
 }
 
 .tileBody  > img.overlay{

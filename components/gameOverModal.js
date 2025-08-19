@@ -16,6 +16,7 @@ export default class GameOverModal extends React.Component {
         const modalState = this.props.modalState
         const title = this.props.title
         const playerSelect = this.props.playerSelect
+        const setIdentity = this.props.setIdentity
 
         return (
             <Modal show={modalState} animation={false} backdrop="static" keyboard={false}>
@@ -33,7 +34,7 @@ export default class GameOverModal extends React.Component {
                         </p>
                     <hr />
                     <div className={css.evidenceHeader}>
-                        {playerSelect.map((alibi, i) => {
+                        {playerSelect && playerSelect.map((alibi, i) => {
                             return (
                                 <Evidence key={`player-${i}`} setIdentity={setIdentity} selectIndex={i} name={alibi.name} image={alibi.image}></Evidence>
                             )
