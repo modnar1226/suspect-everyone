@@ -8,23 +8,7 @@ export default function Home() {
     <Layout home>
       <Head>
         <title>{siteTitle}</title>
-      </Head>
-      <section className={utilStyles.headingMd}>
-        <p>Hello Ian, are you a Killer or a Detective?</p>
-        <p>
-          To get started, make a decision by clicking one of the options below. 
-        </p>
-        <h2>
-          <Link href={'/game/detective'} >
-            <a className="btn btn-danger">Killer</a>
-          </Link>
-          &nbsp;
-          <Link href='/game/detective' >
-            <a className="btn btn-primary">Detective</a>
-          </Link>
-        </h2>
-      </section>
-      
+      </Head>     
     </Layout>
   )
 }

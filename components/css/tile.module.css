@@ -1,0 +1,655 @@
+.mZeroAuto{
+    margin:0 auto;
+}
+
+/* New CSS Grid-based game board */
+.gameBoard {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 8px;
+    width: min(70vh, 75vw);
+    height: min(70vh, 75vw);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+    box-sizing: border-box;
+}
+
+.gameBoardCell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Empty corners at specific positions */
+.emptyCorner {
+    /* Empty corners positioned at grid corners */
+}
+
+.emptyCornerTL {
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.emptyCornerTR {
+    grid-row: 1;
+    grid-column: 7;
+}
+
+.emptyCornerBL {
+    grid-row: 7;
+    grid-column: 1;
+}
+
+.emptyCornerBR {
+    grid-row: 7;
+    grid-column: 7;
+}
+
+/* Move buttons in grid positions */
+.moveButtonUp {
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific column positioning for top buttons */
+.moveButtonUp0 { grid-column: 2; }
+.moveButtonUp1 { grid-column: 3; }
+.moveButtonUp2 { grid-column: 4; }
+.moveButtonUp3 { grid-column: 5; }
+.moveButtonUp4 { grid-column: 6; }
+
+.moveButtonUp:hover {
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.moveButtonDown {
+    grid-row: 7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific column positioning for bottom buttons */
+.moveButtonDown0 { grid-column: 2; }
+.moveButtonDown1 { grid-column: 3; }
+.moveButtonDown2 { grid-column: 4; }
+.moveButtonDown3 { grid-column: 5; }
+.moveButtonDown4 { grid-column: 6; }
+
+.moveButtonDown:hover {
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.moveButtonLeft {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific row positioning for left buttons */
+.moveButtonLeft0 { grid-row: 2; }
+.moveButtonLeft1 { grid-row: 3; }
+.moveButtonLeft2 { grid-row: 4; }
+.moveButtonLeft3 { grid-row: 5; }
+.moveButtonLeft4 { grid-row: 6; }
+
+.moveButtonLeft:hover {
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.moveButtonRight {
+    grid-column: 7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific row positioning for right buttons */
+.moveButtonRight0 { grid-row: 2; }
+.moveButtonRight1 { grid-row: 3; }
+.moveButtonRight2 { grid-row: 4; }
+.moveButtonRight3 { grid-row: 5; }
+.moveButtonRight4 { grid-row: 6; }
+
+.moveButtonRight:hover {
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Tile positions in center 5x5 grid */
+.gameTile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Game tile row positioning */
+.gameTileRow0 { grid-row: 2; }
+.gameTileRow1 { grid-row: 3; }
+.gameTileRow2 { grid-row: 4; }
+.gameTileRow3 { grid-row: 5; }
+.gameTileRow4 { grid-row: 6; }
+
+/* Game tile column positioning */
+.gameTileCol0 { grid-column: 2; }
+.gameTileCol1 { grid-column: 3; }
+.gameTileCol2 { grid-column: 4; }
+.gameTileCol3 { grid-column: 5; }
+.gameTileCol4 { grid-column: 6; }
+
+.grid{
+    display:inline-block;
+    width: 60%;
+}
+
+div.tileBody{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    text-align: center;
+    font-family: cursive;
+    position: relative;
+    border-radius: 12px;
+    background-color: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+div.tileBody:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.clickableTile {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickableTile:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 12px rgba(230, 83, 56, 0.3) !important;
+    border-color: #E65338 !important;
+}
+
+div.arrestAttempt{
+    border:5px solid #00D019
+}
+
+
+.tileImg{
+    width: 60%;
+    height: 60%;
+    margin: 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.colBtn{
+    padding: 1vh;
+    width: 17vh;
+    height: 7vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0 1vh;
+}
+
+
+.tileBody:nth-child(2){
+    margin-left:0;
+}
+
+.colBtn:nth-child(2){
+    margin-left:0;
+}
+
+.rowLeftBtn{
+    margin: auto 1vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    min-width: 7vh;
+    min-height: 7vh;
+    padding: 1vh;
+}
+
+.rowRightBtn{
+    margin: auto 1vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    min-width: 7vh;
+    min-height: 7vh;
+    padding: 1vh;
+}
+
+/* CSS Arrow styling for all move buttons */
+.moveButtonUp::after,
+.moveButtonDown::after,
+.moveButtonLeft::after,
+.moveButtonRight::after {
+    content: '';
+    width: 0;
+    height: 0;
+    transition: all 0.2s;
+}
+
+.moveButtonUp::after {
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 16px solid #E65338;
+}
+
+.moveButtonDown::after {
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 16px solid #E65338;
+}
+
+.moveButtonLeft::after {
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-right: 16px solid #E65338;
+}
+
+.moveButtonRight::after {
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 16px solid #E65338;
+}
+
+.moveButtonUp:hover::after {
+    border-bottom-color: grey;
+}
+
+.moveButtonDown:hover::after {
+    border-top-color: grey;
+}
+
+.moveButtonLeft:hover::after {
+    border-right-color: grey;
+}
+
+.moveButtonRight:hover::after {
+    border-left-color: grey;
+}
+
+div.evidenceBody{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 8vh;
+    height: 10vh;
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    text-align: center;
+    margin: 0.5vh;
+    font-family: cursive;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+div.evidenceBody:hover {
+    transform: scale(1.05);
+    background-color: rgba(255,255,255,0.2);
+}
+
+.evidenceImg {
+    width: 6vh;
+    height: 6vh;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5vh;
+}
+
+.evidenceHeader{
+    text-align:center;
+}
+
+.modalEvidenceContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1vh;
+    text-align: center;
+}
+
+div.alibiBody{
+    /*
+    display:inline-block;
+    width:10vh;
+    background-color:white;
+    box-shadow: 2px 2px 2px 2px lightgrey;
+    text-align:center;
+    margin-left:1vh;
+    position: relative;
+    */
+    display:inline-block;
+    width:15vh;
+    /*background-color:#4F4F4F;*/
+    /*box-shadow: 2px 2px 2px 2px lightgrey;*/
+    text-align:center;
+    margin: 1vh;
+    font-family: cursive;
+    position: relative;
+    /*border: 5px solid #E65338;*/
+    border-radius: 5%;
+}
+
+.txtBlue{
+    color: blue;
+}
+
+.txtRed{
+    color: red;
+}
+.spacer{
+    display:inline-block;
+    width:9vh;
+}
+
+.tileBody  > img.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.alibiBody  > img.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.markPlayer{
+    box-shadow: 0px 0px 5px 5px #E65338 !important;
+}
+
+.alibied{
+    box-shadow: 0px 0px 5px 5px rgba(128,128,128,0.8) !important;
+}
+
+.textRed{
+    color:red;
+}
+
+/* Responsive game board for smaller screens */
+@media (max-width: 768px) {
+    .gameBoard {
+        width: min(55vh, 75vw);
+        height: min(55vh, 75vw);
+        gap: 6px;
+        padding: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gameBoard {
+        width: min(45vh, 80vw, 320px);
+        height: min(45vh, 80vw, 320px);
+        gap: 4px;
+        padding: 16px;
+    }
+}
+
+/* For very small screens or landscape mobile */
+@media (max-height: 600px) {
+    .gameBoard {
+        width: min(40vh, 75vw, 280px);
+        height: min(40vh, 75vw, 280px);
+        gap: 2px;
+        padding: 8px;
+    }
+}
+
+/* Ensure mobile scrolling works properly */
+@media (max-width: 768px) {
+    .gameBoard {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Hide names below 767px width for better containment */
+@media (max-width: 767px) {
+    div.tileBody {
+        font-size: 0 !important;
+        padding: 2px;
+    }
+    
+    .tileImg {
+        width: 80% !important;
+        height: 80% !important;
+        min-width: 20px;
+        min-height: 20px;
+    }
+    
+    /* Make move buttons smaller too */
+    .moveButtonUp,
+    .moveButtonDown,
+    .moveButtonLeft,
+    .moveButtonRight {
+        font-size: 0;
+        min-width: 15px;
+        min-height: 15px;
+    }
+    
+    .moveButtonUp::after,
+    .moveButtonDown::after,
+    .moveButtonLeft::after,
+    .moveButtonRight::after {
+        border-width: 6px;
+    }
+    
+    .moveButtonUp::after {
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 8px solid #E65338;
+    }
+    
+    .moveButtonDown::after {
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid #E65338;
+    }
+    
+    .moveButtonLeft::after {
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-right: 8px solid #E65338;
+    }
+    
+    .moveButtonRight::after {
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 8px solid #E65338;
+    }
+}
+
+/* Ultra-small screens - most aggressive compression */
+@media (max-width: 400px), (max-height: 500px) {
+    .gameBoard {
+        width: min(35vh, 70vw, 250px) !important;
+        height: min(35vh, 70vw, 250px) !important;
+        gap: 1px !important;
+        padding: 6px !important;
+    }
+    
+    .tileImg {
+        width: 85% !important;
+        height: 85% !important;
+        min-width: 18px;
+        min-height: 18px;
+    }
+}
+
+/* Touch device optimization - 5x5 grid with swipe gestures */
+@media (hover: none) and (pointer: coarse) {
+    .gameBoard {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        gap: 10px;
+        width: min(60vh, 75vw);
+        height: min(60vh, 75vw);
+        padding: 16px;
+        touch-action: pan-x pan-y;
+    }
+    
+    /* Hide all arrow buttons on touch devices */
+    .moveButtonUp,
+    .moveButtonDown,
+    .moveButtonLeft,
+    .moveButtonRight {
+        display: none;
+    }
+    
+    /* Hide empty corners since we don't have arrows */
+    .emptyCornerTL,
+    .emptyCornerTR,
+    .emptyCornerBL,
+    .emptyCornerBR {
+        display: none;
+    }
+    
+    /* Reposition game tiles to fill 5x5 grid */
+    .gameTile {
+        grid-row: auto;
+        grid-column: auto;
+    }
+    
+    /* Names will be controlled by the 767px breakpoint */
+    div.tileBody {
+        padding: 4px;
+    }
+    
+    .tileImg {
+        width: 65% !important;
+        height: 65% !important;
+    }
+}
+
+/* Touch device - smaller screens need more aggressive compression */
+@media (hover: none) and (pointer: coarse) and (max-width: 600px) {
+    .gameBoard {
+        width: min(40vh, 65vw, 280px) !important;
+        height: min(40vh, 65vw, 280px) !important;
+        gap: 5px !important;
+        padding: 10px !important;
+    }
+    
+    div.tileBody {
+        padding: 1px;
+    }
+    
+    .tileImg {
+        width: 75% !important;
+        height: 75% !important;
+    }
+}
+
+/* Touch device - very small screens need most aggressive compression */
+@media (hover: none) and (pointer: coarse) and (max-width: 400px) {
+    .gameBoard {
+        width: min(35vh, 60vw, 230px) !important;
+        height: min(35vh, 60vw, 230px) !important;
+        gap: 3px !important;
+        padding: 8px !important;
+    }
+    
+    div.tileBody {
+        padding: 1px;
+    }
+    
+    .tileImg {
+        width: 80% !important;
+        height: 80% !important;
+    }
+}
+
+/* Drag feedback styles */
+.dragHighlight {
+    background: rgba(74, 158, 255, 0.3) !important;
+    border: 2px solid #4A9EFF !important;
+    box-shadow: 0 0 12px rgba(74, 158, 255, 0.5) !important;
+    animation: pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { 
+        background: rgba(74, 158, 255, 0.2);
+        box-shadow: 0 0 8px rgba(74, 158, 255, 0.4);
+    }
+    to { 
+        background: rgba(74, 158, 255, 0.4);
+        box-shadow: 0 0 16px rgba(74, 158, 255, 0.6);
+    }
+}
+
+/* Removed overlay styles - now using direct row/column transforms */

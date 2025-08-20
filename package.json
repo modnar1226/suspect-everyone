@@ -1,36 +1,41 @@
 {
-  "name": "learn-starter",
+  "name": "suspect-everypne",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "docs": "jsdoc -c jsdoc.conf.json",
+    "docs:watch": "nodemon --watch components --watch services --watch pages/game --ext js --exec \"npm run docs\""
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.32",
-    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.12",
-    "@restart/hooks": "^0.3.25",
+    "@restart/hooks": "^0.3.27",
     "bootstrap": "^4.5.3",
-    "chokidar": "^3.4.3",
+    "chokidar": "^3.5.2",
     "fs": "0.0.1-security",
-    "gray-matter": "^4.0.2",
-    "jquery": "^3.5.1",
+    "gray-matter": "^4.0.3",
+    "jquery": "^3.6.0",
     "mysql": "^2.18.1",
-    "next": "^10.0.1",
+    "next": "^12.3.4",
     "popper.js": "^1.16.1",
-    "react": "^17.0.1",
-    "react-bootstrap": "^1.4.0",
-    "react-dom": "^17.0.1"
+    "react": "^18.3.1",
+    "react-bootstrap": "^1.6.8",
+    "react-dom": "^18.3.1"
   },
   "description": "This is a starter template for [Learn Next.js](https://nextjs.org/learn).",
   "main": "index.js",
   "directories": {
     "lib": "lib"
   },
-  "devDependencies": {},
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jsdoc": "^4.0.4",
+    "nodemon": "^3.1.10"
+  }
 }

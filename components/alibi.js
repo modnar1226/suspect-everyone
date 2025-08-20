@@ -1,5 +1,5 @@
 import React from 'react'
-import css from './tile.module.css'
+import css from './css/tile.module.css'
 
 export default class Alibi extends React.Component{
     constructor (props) {
@@ -19,8 +19,8 @@ export default class Alibi extends React.Component{
             killed = <img key={`oId-${id}`} className={css.overlay} src={`/images/deadOverlay.png`} alt={name} />
         }
         return (
-            <div key={`e-${id}`} id={name} className={css.alibiBody} onClick={() => this.props.alibiSuspect(alibiIndex,susId)}>
-                <img key={`i-${id}`}className={css.tileImg} src={image} alt='image'/>
+            <div key={`e-${id}`} id={name} className={css.evidenceBody} onClick={() => this.props.alibiSuspect(alibiIndex,susId)}>
+                <img key={`i-${id}`} className={css.evidenceImg} src={image} alt='image'/>
                 {killed}
                 {name}
             </div>

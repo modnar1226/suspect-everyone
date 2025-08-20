@@ -1,6 +1,5 @@
 import React from 'react'
-import css from './tile.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import css from './css/tile.module.css'
 
 export default class MoveDownButton extends React.Component{
     constructor (props) {
@@ -8,9 +7,9 @@ export default class MoveDownButton extends React.Component{
     }
 
     render() {
+        const positionClass = css[`moveButtonDown${this.props.index}`]
         return (
-            <div className={css.colBtn} onClick={() => this.props.handleClick(this.props.index, this.props.direction)}>
-                <FontAwesomeIcon icon='chevron-down' transform="grow-20"/>
+            <div className={`${css.moveButtonDown} ${positionClass}`} onClick={() => this.props.handleClick(this.props.index, this.props.direction)}>
             </div>
         )
     }
