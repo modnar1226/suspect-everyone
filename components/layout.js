@@ -1,3 +1,4 @@
+import React from 'react'
 import Head from 'next/head'
 import styles from './css/layout.module.css'
 import utilStyles from '../styles/utils.module.css'
@@ -5,11 +6,22 @@ import Link from 'next/link'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import RulesModal from './RulesModal'
 
 
 export const siteTitle = 'Suspect Everyone'
 
 export default function Layout({ children, home }) {
+    const [showRulesModal, setShowRulesModal] = React.useState(false)
+
+    const handleRulesClick = (e) => {
+        e.preventDefault()
+        setShowRulesModal(true)
+    }
+
+    const handleRulesClose = () => {
+        setShowRulesModal(false)
+    }
     return (
         <>
             <Head>
@@ -53,7 +65,12 @@ export default function Layout({ children, home }) {
                                         </Row>
                                     </Col>
                                     <Col sm="12" md="5" className="mt-2">
-                                        <a id={`${styles.rules}`} href="#" className={`border p-2 ${styles.invert}`}>
+                                        <a 
+                                            id={`${styles.rules}`} 
+                                            href="#" 
+                                            className={`border p-2 ${styles.invert}`}
+                                            onClick={handleRulesClick}
+                                        >
                                             Rules
                                         </a>
                                     </Col>
@@ -75,6 +92,14 @@ export default function Layout({ children, home }) {
                     </div>
                 </Container>
             </div>
+            
+            {/* Rules Modal for home page */}
+            <RulesModal 
+                show={showRulesModal}
+                onHide={handleRulesClose}
+                mode="all"
+                showModeSelector={true}
+            />
         </>
     )
 }

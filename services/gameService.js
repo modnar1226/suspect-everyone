@@ -4,7 +4,35 @@
  */
 
 export class GameService {
-    
+    // ===== STATE UTILITIES =====
+
+    /**
+     * Retrieve the initial game state before hydration
+     * @param {Array} staticSuspects - The original list of suspects
+     * @returns {Object}
+     */
+    static getInitialState(staticSuspects) {
+        // Always return static data to ensure server/client render match
+        
+        return {
+            suspects: this.populateBoardArray(staticSuspects),
+            evidenceDeck: [],
+            killCount: 0,
+            modalState: false,
+            secretIdentity: [],
+            alibiList: [],
+            killersIdentity: [],
+            playerSelect: [],
+            won: false,
+            lost: false,
+            showArrestList: false,
+            arrestList: [],
+            whosTurn: 'Detective',
+            gameInitialized: false
+        }
+    }
+
+
     // ===== ARRAY UTILITIES =====
     
     /**
