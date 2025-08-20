@@ -1,0 +1,29 @@
+{
+  "source": {
+    "include": [
+      "./services/",
+      "./components/", 
+      "./pages/game/",
+      "./README.md"
+    ],
+    "includePattern": "\\.(js|jsx)$",
+    "exclude": [
+      "node_modules/"
+    ]
+  },
+  "opts": {
+    "destination": "./docs/",
+    "recurse": true,
+    "readme": "./README.md"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "sourceType": "module"
+}

@@ -5,11 +5,8 @@
 
 import Head from 'next/head'
 import Layout from '../../components/layout'
-import MoveUpButton from '../../components/moveUpButton'
-import MoveDownButton from '../../components/moveDownButton'
-import MoveLeftButton from '../../components/moveLeftButton'
-import MoveRightButton from '../../components/moveRightButton'
-import Tile from '../../components/tile'
+import GameBoard from '../../components/gameBoard'
+import { GameService } from '../../services/gameService'
 import css from '../../components/css/tile.module.css'
 import React from 'react'
 import Suspects from '../../mappings/suspectList'
@@ -25,10 +22,9 @@ import StartModal from '../../components/startModal'
 import GameOverModal from '../../components/gameOverModal'
 import ArrestListModal from '../../components/arrestListModal'
 
-export default class GameBoard extends React.Component{
+export default class DetectiveGameBoard extends React.Component{
     constructor(props){
         super(props)
-        console.log('=== CONSTRUCTOR called ===')
         
         // This binding is necessary to make `this` work in the callback
         this.handleClick = this.handleClick.bind(this)
@@ -48,39 +44,26 @@ export default class GameBoard extends React.Component{
         this.state = this.getInitialState()
         this.setIdentity = this.setIdentity.bind(this)
         
-        console.log('=== CONSTRUCTOR completed ===')
     }
 
     componentDidMount() {
         // Initialize game data after mounting to prevent hydration issues
-        console.log('=== componentDidMount called ===')
-        console.log('suspectList:', this.suspectList?.length)
         
         // Only initialize if not already done
         if (!this.state.gameInitialized) {
             const newGameData = this.newBoard()
-            console.log('newBoard returned:', {
-                killersIdentity: newGameData.killersIdentity?.length,
-                playerSelect: newGameData.playerSelect?.length,
-                modalState: newGameData.modalState
-            })
             
             this.setState({
                 ...newGameData,
                 gameInitialized: true
             }, () => {
-                console.log('setState completed, current state:', {
-                    killersIdentity: this.state.killersIdentity?.length,
-                    playerSelect: this.state.playerSelect?.length,
-                    modalState: this.state.modalState
-                })
+               
             })
         }
     }
 
     getInitialState() {
         // Always return static data to ensure server/client render match
-        console.log('=== getInitialState called ===')
         
         const staticSuspects = this.cloneSuspectArray(this.suspectList)
         return {
@@ -102,24 +85,14 @@ export default class GameBoard extends React.Component{
     }
 
     newBoard(){
-        console.log('=== newBoard called ===')
-        console.log('this.suspectList exists:', !!this.suspectList)
-        console.log('this.suspectList length:', this.suspectList?.length)
-        
-        const suspects = this.shuffle(this.cloneSuspectArray(this.suspectList))
-        const evidenceDeck = this.shuffle(this.cloneSuspectArray(this.suspectList))
-        
-        console.log('evidenceDeck after shuffle:', evidenceDeck?.length)
-        console.log('evidenceDeck first few:', evidenceDeck?.slice(0, 3)?.map(s => s?.name))
+        const suspects = GameService.shuffle(GameService.cloneSuspectArray(this.suspectList))
+        const evidenceDeck = GameService.shuffle(GameService.cloneSuspectArray(this.suspectList))
         
         const killersIdentity = evidenceDeck.splice(0, 1)
         const playerSelect = evidenceDeck.splice(0, 4)
         
-        console.log('after splice - killersIdentity:', killersIdentity?.map(k => k?.name))
-        console.log('after splice - playerSelect:', playerSelect?.map(p => p?.name))
-        
         return {
-            suspects: this.populateBoardArray(suspects),
+            suspects: GameService.populateBoardArray(suspects),
             evidenceDeck: evidenceDeck,
             killCount: 0,
             modalState: true,
@@ -158,13 +131,16 @@ export default class GameBoard extends React.Component{
             if (!this.state.killersIdentity || !this.state.killersIdentity[0]) {
                 return
             }
-            const killersLocation = this.getLocation(this.state.killersIdentity[0].id)
-            const availableKills = this.getAdjacent(killersLocation)
+            const killersLocation = GameService.getLocation(this.state.suspects, this.state.killersIdentity[0].id)
+            const availableKills = GameService.getAdjacent(this.state.suspects, killersLocation)
             const location = availableKills[Math.floor(Math.random() * availableKills.length)]
             const moveButton = moveOptions[Math.floor(Math.random() * moveOptions.length)]
             let availableMoves = [
                 () => { this.changeIdentity(this.state.killersIdentity[0].id) },
-                () => { this.moveBoard(moveButton[1], moveButton[0], this.DETECTIVE) },
+                () => { 
+                    const newSuspects = GameService.moveBoard(this.state.suspects, moveButton[1], moveButton[0])
+                    this.setState({ suspects: newSuspects, whosTurn: this.DETECTIVE })
+                },
             ]
             if (location !== undefined) {
                 availableMoves.push(() => { this.killSuspect(location) })
@@ -538,13 +514,6 @@ export default class GameBoard extends React.Component{
         const arrestList = this.state.arrestList
         const whosTurn = this.state.whosTurn
 
-        console.log('=== RENDER ===', {
-            modalState,
-            playerSelectLength: playerSelect?.length,
-            secretIdentityLength: secretIdentity?.length,
-            modalCondition: modalState && playerSelect && playerSelect.length > 0 && secretIdentity && secretIdentity.length === 0
-        })
-
         return (
             <Layout>
                 <Head>
@@ -608,54 +577,10 @@ export default class GameBoard extends React.Component{
                         </Row>
                     </Col>
                     <Col md={6}>
-                        <div className={css.gameBoard}>
-                            {/* Empty corner */}
-                            <div className={css.emptyCornerTL}></div>
-                            
-                            {/* Top move buttons */}
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='0' />
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='1' />
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='2' />
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='3' />
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='4' />
-                            
-                            {/* Empty corner */}
-                            <div className={css.emptyCornerTR}></div>
-
-                            {/* Game rows with left buttons, tiles, and right buttons */}
-                            {suspects.map((row, rowIndex) => (
-                                <React.Fragment key={`boardRow-${rowIndex}`}>
-                                    <MoveLeftButton handleClick={this.handleClick} direction='left' index={rowIndex} />
-                                    {row.map((suspect, colIndex) => (
-                                        <div key={suspect.id} className={`${css.gameTile} ${css[`gameTileRow${rowIndex}`]} ${css[`gameTileCol${colIndex}`]}`}>
-                                            <Tile
-                                                id={suspect.id}
-                                                name={suspect.name}
-                                                alive={suspect.alive}
-                                                image={suspect.image}
-                                                alibiedImage={suspect.alibiedImage}
-                                                alibied={suspect.alibied}
-                                                isPlayer={suspect.isPlayer}
-                                            />
-                                        </div>
-                                    ))}
-                                    <MoveRightButton handleClick={this.handleClick} direction='right' index={rowIndex} />
-                                </React.Fragment>
-                            ))}
-
-                            {/* Empty corner */}
-                            <div className={css.emptyCornerBL}></div>
-                            
-                            {/* Bottom move buttons */}
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='0' />
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='1' />
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='2' />
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='3' />
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='4' />
-                            
-                            {/* Empty corner */}
-                            <div className={css.emptyCornerBR}></div>
-                        </div>
+                        <GameBoard 
+                            suspects={suspects} 
+                            handleClick={this.handleClick}
+                        />
                     </Col>
                     <Col md={3}>
                         <Row>

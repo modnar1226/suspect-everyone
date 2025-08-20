@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "docs": "jsdoc -c jsdoc.conf.json",
+    "docs:watch": "nodemon --watch components --watch services --watch pages/game --ext js --exec \"npm run docs\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
@@ -31,5 +33,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jsdoc": "^4.0.4",
+    "nodemon": "^3.1.10"
+  }
 }

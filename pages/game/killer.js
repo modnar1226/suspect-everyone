@@ -5,12 +5,8 @@
 
 import Head from 'next/head'
 import Layout from '../../components/layout'
-import MoveUpButton from '../../components/moveUpButton'
-import MoveDownButton from '../../components/moveDownButton'
-import MoveLeftButton from '../../components/moveLeftButton'
-import MoveRightButton from '../../components/moveRightButton'
+import GameBoard from '../../components/gameBoard'
 import Tile from '../../components/tile'
-import Evidence from '../../components/evidence'
 import css from '../../components/css/tile.module.css'
 import React from 'react'
 import Suspects from '../../mappings/suspectList'
@@ -18,10 +14,9 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
-import Alibi from '../../components/alibi'
-import Suspect from '../../components/suspect'
+import utilStyles from '../../styles/utils.module.css'
 
-export default class GameBoard extends React.Component {
+export default class KillerGameBoard extends React.Component {
     constructor(props) {
         super(props)
         // This binding is necessary to make `this` work in the callback
@@ -435,13 +430,13 @@ export default class GameBoard extends React.Component {
                 <Head>
                     <title>Game Board</title>
                 </Head>
-                <Row>
-                    <Col md={2}>
+                <Row  className='text-white'>
+                    <Col md={3}>
                         <h4>Per turn you may:</h4>
                         <ol>
                             <li>You may shift the board in any direction 1 time.</li>
-                            <li>You may change your alias 1.</li>
-                            <li>You may try to make an arrest by selecting a tile adjacent to your current location.</li>
+                            <li>You may change your alias 1 time.</li>
+                            <li>You may kill a suspect by selecting a tile adjacent to your current location.</li>
                         </ol>
                         <hr />
                         <div className={css.evidenceHeader}>
@@ -458,63 +453,24 @@ export default class GameBoard extends React.Component {
                             <Button variant="warning" onClick={this.changeIdentity}>Change</Button>
                         </div>
                     </Col>
-                    <Col md={8}>
-                        <Row className="justify-content-md-center">
-                            <div className={css.spacer}></div>
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='0' />
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='1' />
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='2' />
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='3' />
-                            <MoveUpButton handleClick={this.handleClick} direction='up' index='4' />
-                        </Row>
-                        {suspects.map((row, rowIndex) => {
-                            return (
-                                <Row key={`boardRow-${rowIndex}`} className="justify-content-md-center">
-                                    <MoveLeftButton key={`0-${rowIndex}`} handleClick={this.handleClick} direction='left' index={rowIndex} />
-                                    {row.map((suspect) => {
-                                        return (
-                                            <Tile
-                                                key={suspect.id}
-                                                id={suspect.id}
-                                                name={suspect.name}
-                                                alive={suspect.alive}
-                                                image={suspect.image}
-                                                alibiedImage={suspect.alibiedImage}
-                                                alibied={suspect.alibied}
-                                                isPlayer={suspect.isPlayer}
-                                                killSuspect = {this.killSuspect}
-                                            ></Tile>
-                                        )
-                                    })
-                                    }
-                                    <MoveRightButton key={`1-${rowIndex}`} handleClick={this.handleClick} direction='right' index={rowIndex} />
-                                </Row>
-                            )
-                        })}
-                        <Row className="justify-content-md-center">
-                            <div className={css.spacer}></div>
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='0' />
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='1' />
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='2' />
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='3' />
-                            <MoveDownButton handleClick={this.handleClick} direction='down' index='4' />
-                        </Row>
+                    <Col md={6}>
+                        <GameBoard
+                            suspects={suspects} 
+                            handleClick={this.handleClick}
+                        />
                     </Col>
-                    <Col md={2}>
-                        <h2 className={(whosTurn === 'Detective' ? css.txtBlue : css.txtRed)}>
-                            {whosTurn}'s Turn
-                        </h2>
-                        <h4>People Killed: {killCount}</h4>
+                    <Col md={3}>
+                    
                     </Col>
                 </Row>
 
                 <Modal show={modalState} onHide={this.handleClose} animation={false} backdrop="static" keyboard={false}>
-                    <Modal.Header dialogclassname={`justify-content: center`}>
+                    <Modal.Header className={`${utilStyles.bg_darkGrey} justify-content: center text-white`}>
                         <Modal.Title>
                             There's a Murdrer on the loose!
                         </Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body className={`${utilStyles.bg_darkGrey} text-white`}>
                         <h1 className='text-center'>
                             And it's <b>YOU</b> {killersIdentity[0].name}
                         </h1>
@@ -531,7 +487,7 @@ export default class GameBoard extends React.Component {
                                 )
                             })}
                         </div>
-                        <Button onClick={this.handleClose}>Start</Button>
+                        <Button className={`text-center`} onClick={this.handleClose}>Start</Button>
                     </Modal.Body>
                 </Modal>
 
