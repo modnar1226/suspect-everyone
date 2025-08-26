@@ -552,12 +552,12 @@ div.alibiBody{
 /* Touch device optimization - 5x5 grid with swipe gestures */
 @media (hover: none) and (pointer: coarse) {
     .gameBoard {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        grid-template-rows: repeat(5, 1fr);
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important;
+        grid-template-rows: repeat(5, 1fr) !important;
         gap: 10px;
-        width: min(60vh, 75vw);
-        height: min(60vh, 75vw);
+        width: min(70vh, 90vw) !important;
+        height: min(70vh, 90vw) !important;
         padding: 16px;
         touch-action: pan-x pan-y;
     }
@@ -630,6 +630,87 @@ div.alibiBody{
     .tileImg {
         width: 80% !important;
         height: 80% !important;
+    }
+}
+
+/* Force vertical layout for mobile landscape orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+    .gameBoard {
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important;
+        grid-template-rows: repeat(5, 1fr) !important;
+        gap: 8px !important;
+        width: min(80vh, 60vw, 350px) !important;
+        height: min(80vh, 60vw, 350px) !important;
+        padding: 12px !important;
+        touch-action: pan-x pan-y;
+    }
+    
+    /* Hide all arrow buttons in landscape */
+    .moveButtonUp,
+    .moveButtonDown,
+    .moveButtonLeft,
+    .moveButtonRight {
+        display: none !important;
+    }
+    
+    /* Hide empty corners */
+    .emptyCornerTL,
+    .emptyCornerTR,
+    .emptyCornerBL,
+    .emptyCornerBR {
+        display: none !important;
+    }
+    
+    /* Reposition game tiles to fill 5x5 grid */
+    .gameTile {
+        grid-row: auto !important;
+        grid-column: auto !important;
+    }
+}
+
+/* Additional breakpoint for Pixel 4a landscape (393px height) */
+@media (max-height: 450px) and (max-width: 900px) {
+    .gameBoard {
+        display: grid !important;
+        grid-template-columns: repeat(5, 1fr) !important;
+        grid-template-rows: repeat(5, 1fr) !important;
+        gap: 6px !important;
+        width: min(85vh, 55vw, 320px) !important;
+        height: min(85vh, 55vw, 320px) !important;
+        padding: 10px !important;
+        touch-action: pan-x pan-y;
+    }
+    
+    /* Hide all arrow buttons */
+    .moveButtonUp,
+    .moveButtonDown,
+    .moveButtonLeft,
+    .moveButtonRight {
+        display: none !important;
+    }
+    
+    /* Hide empty corners */
+    .emptyCornerTL,
+    .emptyCornerTR,
+    .emptyCornerBL,
+    .emptyCornerBR {
+        display: none !important;
+    }
+    
+    /* Reposition game tiles */
+    .gameTile {
+        grid-row: auto !important;
+        grid-column: auto !important;
+    }
+    
+    div.tileBody {
+        padding: 2px;
+    }
+    
+    .tileImg {
+        width: 70% !important;
+        height: 70% !important;
     }
 }
 
